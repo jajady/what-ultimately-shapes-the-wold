@@ -6,15 +6,6 @@ class Headset extends Creature {
     this.eats = ["Bug", "Caterpillar"];
     this.fears = ["Octopus"];
 
-    // mouth pulse
-    this._wasTouchedFood = false;
-    this._pulseSeq = [];
-    this._pulse = null; // { start, mult, up, hold, down }
-    this._big = { up: 18, hold: 8, down: 22 };
-    this._small = { up: 14, hold: 6, down: 18 };
-
-    this.leftEye = new Eye(this);         // 눈
-    this.rightEye = new Eye(this);
     // 눈은 base blink가 관리 → 초기값만 있으면 됨
     this.eyeOpen = 1.0;
 
@@ -29,18 +20,11 @@ class Headset extends Creature {
     this.showFeet = false;      // 발
     this.showHat = false;       // 모자
     this.showArc = false; // 겉에 호 그리기
+
+    // Mouth(parent, offsetX, offsetY, widthMult, heightMult)
+    this.mouth = new Mouth(this, 0, 0.3, 0.3, 0.15);
   }
 
-  _startEatPulseSequence() {
-    this._pulseSeq = [
-      { mult: 3, ...this._big },
-      { mult: 2, ...this._small },
-      { mult: 2, ...this._small },
-      { mult: 2, ...this._small },
-      { mult: 2, ...this._small },
-    ];
-    this._pulse = null;
-  }
 
   // ★ 진화 훅
   onEvolve(step) {
@@ -56,47 +40,11 @@ class Headset extends Creature {
   show() {
     // 1) 버프 스케일
     const s = this.getVisualScale();
-
-    // 2) 먹이 상승 에지 → 펄스 시퀀스
-    if (this.touchedFood && !this._wasTouchedFood) this._startEatPulseSequence();
-    this._wasTouchedFood = this.touchedFood;
-
-    // 3) 현재 펄스 없으면 큐에서 꺼내기
-    if (!this._pulse && this._pulseSeq.length > 0) {
-      const next = this._pulseSeq.shift();
-      this._pulse = { start: frameCount, ...next };
-    }
-
-    // 이징
-    const easeUp = (t) => (1 - Math.cos(Math.PI * t)) / 2;
-    const easeDown = (t) => (1 - Math.cos(Math.PI * t)) / 2;
-
-    // 4) 입(세로) 스케일 (펄스)
-    let mouthScale = 1.0;
-    if (this._pulse) {
-      const { start, mult, up, hold, down } = this._pulse;
-      const elapsed = frameCount - start;
-      const total = up + hold + down;
-
-      if (elapsed <= total) {
-        if (elapsed <= up) {
-          const t = elapsed / up;
-          mouthScale = 1 + (mult - 1) * easeUp(t);
-        } else if (elapsed <= up + hold) {
-          mouthScale = mult;
-        } else {
-          const t = (elapsed - up - hold) / down;
-          const k = easeDown(t);
-          mouthScale = mult - (mult - 1) * k;
-        }
-      } else {
-        this._pulse = null;
-        mouthScale = 1.0;
-      }
-    }
-
-    // === 그리기 시작 ===
     const r = this.r * s;
+
+    // 2) 입(펄스) 상태 업데이트
+    //    - 먹이 접촉 상승 에지에서 내부적으로 시퀀스 시작
+    this.mouth.update(this.touchedFood);
 
     // === 지속 후광 ===
     if (this.isHalo) {
@@ -133,7 +81,7 @@ class Headset extends Creature {
       pop();
     }
 
-    // 형체 그리기
+    // === 본체 그리기 ===
     push();
     noStroke();
     translate(this.position.x, this.position.y);
@@ -217,7 +165,7 @@ class Headset extends Creature {
     translate(-r, 0);
     rotate(this._earAngle);
     ellipse(0, 0, r * 0.5, r * 2.5);
-    if (this.showEarShadow) {      // 귀 음영(2단계~)
+    if (this.showEarShadow) {
       fill(this.c3);
       ellipse(0, -r * 0.3, r * 0.2, r * 0.8);
     }
@@ -250,17 +198,6 @@ class Headset extends Creature {
       pop();
     }
 
-    /* ── 입 펄스 ── */
-    const topY = r * 0.20;
-    const baseH = r * 0.15;
-    const mouthH = baseH * mouthScale;
-    const bottomY = topY + mouthH;
-    const halfW = r * 0.3;
-    let cornerR = constrain(mouthH * 0.6, 1, min(halfW, mouthH) - 0.5);
-    fill(0);
-    rectMode(CORNERS);
-    rect(-halfW, topY, halfW, bottomY, 0, 0, cornerR, cornerR);
-
     /* ── 외곽 호(5단계~) ── */
     if (this.showArc) {
       noFill();
@@ -273,6 +210,11 @@ class Headset extends Creature {
       noStroke();
     }
 
-    pop();
+    pop(); // ← 본체 translate 블록 종료
+
+    // === 입(공용 Mouth) ===
+    // Mouth.show()는 부모 절대좌표를 스스로 계산하므로
+    // translate 바깥에서 호출해도 OK
+    this.mouth.show();
   }
 }

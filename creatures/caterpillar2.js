@@ -60,12 +60,45 @@ class Caterpillar2 extends Creature {
     const s = this.getVisualScale();
     const r = this.r * s;
 
+    // === 지속 후광 ===
+    if (this.isHalo) {
+      noStroke();
+      const pulse = 0.6 + 0.4 * sin(frameCount * 0.05); // 살짝 숨쉬듯 펄스
+      const alpha = 90 + 60 * pulse; // 알파값 변화
+      fill(209, 255, 176, alpha);    // 연초록 빛 후광
+      ellipse(this.position.x, this.position.y, r * 1.8, r * 1.8);
+    }
+
+    // === 힐 연결선: 머리에서 시작 ===
+    if (this._healTarget) {
+      const a = this.position;        // ← 머리 월드 좌표
+      const b = this._healTarget.position;
+
+      const pulse = 0.5 + 0.5 * sin(frameCount * 0.3);
+      const alpha = 180 * pulse;
+
+      push();
+      stroke(red(this.c2), green(this.c2), blue(this.c2), alpha);
+      strokeWeight(max(1, this.r * 0.12));
+      line(a.x, a.y, b.x, b.y);
+
+      // 선을 따라 이동하는 점
+      const dotT = (millis() - this._healStartMs) / 400.0;
+      const frac = dotT - floor(dotT);
+      const px = lerp(a.x, b.x, frac);
+      const py = lerp(a.y, b.y, frac);
+      noStroke();
+      fill(this.c3);
+      circle(px, py, this.r * 0.35);
+      pop();
+    }
+
+    // 본체 그리기
     noStroke();
     ellipseMode(CENTER);
-
     // 가장 뒤쪽(꼬리) 색은 검정으로 시작하고,
     // 가장 앞쪽(머리)은 currentColor 그대로
-    const baseColor = color(0);   // 뒤쪽(가장 어두운 색)
+    const baseColor = backgroundColor;   // 뒤쪽(가장 어두운 색)
     const headColor = this.currentColor;  // 앞쪽(가장 밝은 색)
 
     for (let i = this.circles.length - 1; i >= 0; i--) {

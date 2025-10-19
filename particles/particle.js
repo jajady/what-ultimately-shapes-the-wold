@@ -40,7 +40,7 @@ class Particle {
     noStroke();
     fill(255, this.lifespan);
     if (zoomActive === false) {
-      const c = color('#ffffffff');       // #RRGGBB
+      const c = color('#fffa65ff');       // #RRGGBB
       c.setAlpha(constrain(this.lifespan, 0, 255));
       fill(c);
       circle(this.position.x, this.position.y, 5);

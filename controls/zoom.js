@@ -1,3 +1,4 @@
+// zoom.js
 // ==== 핀치/줌 파라미터 ====
 let handPoints = [];        // 화면 좌표(여러 손)
 let handPointsWorld = [];   // 월드 좌표(줌/중심 반영 후)
@@ -90,9 +91,7 @@ function drawHUD() {
   textAlign(RIGHT, TOP);
   text(
     `zoom: ${zoom.toFixed(2)}\n` +
-    `target: ${targetZoom.toFixed(2)}\n` +
-    `hands: ${hands.length}\n` +
-    `pinchThresh: ${PINCH_THRESH}px`,
+    `target: ${targetZoom.toFixed(2)}\n`,
     width - 10, 10
   );
   pop();

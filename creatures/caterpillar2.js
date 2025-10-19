@@ -2,50 +2,29 @@ class Caterpillar2 extends Creature {
   constructor(position, dna) {
     super(position, dna);
 
-    this.r = this.r * 2;
+    this.r = this.r * 1.7;
     this.kind = "Caterpillar";
     this.eats = [];
     this.fears = ["Bug"];
 
     this.circles = [];
-    this.circleCount = floor(random(this.r * 2.5, this.r * 3.5));
-    this.lerpAmt = 0.05;
-
+    this.circleCount = 20;
+    // this.circleCount = floor(random(this.r * 2.5, this.r * 3.5));
+    this.lerpAmt = 0.2;
     this.init();
 
-    // this.amplitude = random(10, 20);
-    // this.period = random(100, 400);
-    // this.w = floor(random(this.r * 2.5, this.r * 3.5));
-
-    // // Wave (x, y, radius, w, amplitude, period, col)
-    // this.wave = new Wave(this.position.x, this.position.y, this.r * 2, this.w, this.amplitude, this.period, this.currentColor);
+    // Eye(parent, offsetX, offsetY, widthMult, heightMult)
+    this.leftEye = new Eye(this, -0.35, -0.2, 0.15, 0.3);    // 눈
+    this.rightEye = new Eye(this, 0.35, -0.2, 0.15, 0.3);
   }
 
-  // // ★ 손 접촉 상태가 전달되면: 기본 깜빡 + wave에도 전달
-  // blink(isTouching) {
-  //   super.blink(isTouching);
-  //   if (this.wave?.blink) this.wave.blink(isTouching);
-  // }
-
-  // // ★ 진화 훅: 2단계가 되면 더듬이 타겟을 1로
-  // onEvolve(step) {
-  //   if (!this.wave) return;
-
-  //   // 단계별 켜기/끄기
-  //   this.wave.antTarget = (step >= 2) ? 1 : 0;   // 더듬이(서서히 자람)
-  //   this.wave.showFur = (step >= 3);
-  //   this.wave.showStripes = (step >= 4);
-  //   this.wave.showFeet = (step >= 5);
-  // }
-
-  init() {    // 몸통 원 위치 저장 배열 생성
-    for (let i = 0; i < this.circleCount; i++) {
-      this.circles.push(createVector(this.position.x, this.position.y));
-    }
+  update() {
+    super.update();
+    this.bodyUpdate();    // 몸 내부 업데이트
   }
 
-  show() {
-    // 몸통의 각 원의 위치 갱신
+  bodyUpdate() {
+    // 몸의 각 원의 위치 갱신
     if (this.isBorder) {     // 경계면 넘어에 있을 때
       for (let i = 0; i < this.circles.length; i++) {
         this.circles[i].x = this.position.x;
@@ -64,22 +43,45 @@ class Caterpillar2 extends Creature {
         }
       }
     }
+  }
 
+  // ✅ Creature.checkPetting()이 매 프레임 이걸 호출함
+  blink(isTouching) {
+    this.leftEye.update(isTouching);
+    this.rightEye.update(isTouching);
+  }
 
-    // 그리기  
-    push();
-    translate(this.position.x, this.position.y);
-    let circleColor = 0;    // black
-    // 뒤쪽 원부터 앞으로 그림
+  show() {
+    // 1) 버프 스케일
+    const s = this.getVisualScale();
+    const r = this.r * s;
+
+    noStroke();
+    ellipseMode(CENTER);
+
+    // 가장 뒤쪽(꼬리) 색은 검정으로 시작하고,
+    // 가장 앞쪽(머리)은 currentColor 그대로
+    const baseColor = color(0);   // 뒤쪽(가장 어두운 색)
+    const headColor = this.currentColor;  // 앞쪽(가장 밝은 색)
+
     for (let i = this.circles.length - 1; i >= 0; i--) {
-      fill(circleColor);
-      noStroke();
-      circleColor += (255 / this.circleCount);
-      ellipse(this.circles[i].x, this.circles[i].y, this.r, this.r);
-    }
-    fill('rgb(255, 0, 0)');
-    circle(this.position.x, this.position.y, this.r);
-    pop();
+      // i가 작을수록(머리 쪽) 밝고, 클수록(꼬리 쪽) 어둡게
+      const amt = map(i, this.circles.length - 1, 0, 0, 1);
+      const bodyColor = lerpColor(baseColor, headColor, amt);
 
+      fill(bodyColor);
+      ellipse(this.circles[i].x, this.circles[i].y, r, r);
+    }
+
+    // 눈 그리기
+    this.leftEye.show();
+    this.rightEye.show();
+
+  }
+
+  init() {    // 몸통 원 위치 저장 배열 생성
+    for (let i = 0; i < this.circleCount; i++) {
+      this.circles.push(createVector(this.position.x, this.position.y));
+    }
   }
 }

@@ -1,3 +1,4 @@
+// hand.js
 //---- 비디오/손 인식 ----//
 let video;      // 웹캠 영상을 담을 변수
 let handPose;   // ml5.js의 손 인식 모델을 담을 변수

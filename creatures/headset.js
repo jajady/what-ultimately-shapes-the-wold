@@ -13,6 +13,8 @@ class Headset extends Creature {
     this._big = { up: 18, hold: 8, down: 22 };
     this._small = { up: 14, hold: 6, down: 18 };
 
+    this.leftEye = new Eye(this);         // 눈
+    this.rightEye = new Eye(this);
     // 눈은 base blink가 관리 → 초기값만 있으면 됨
     this.eyeOpen = 1.0;
 

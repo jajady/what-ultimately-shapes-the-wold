@@ -2,14 +2,9 @@
 // 먹이 -> 점점 먹이를 잘 찾고 먹는 생명체로 진화.
 // 부모 선택을 위한 "적합도": 오래 살수록 번식할 기회가 많아짐 => 수명.
 
-/* ────────────────────────────────────────────────────────────────
+/* 
   Creature (모든 생명체의 부모 클래스)
-  - 공통 물리(노이즈 이동, 경계 래핑), 체력/색상 보간
-  - "쓰다듬기" 감지(손의 진입 이벤트), 3초 버프 스케일
-  - ★ 공통 애니메이션 상태: 눈 깜빡임(eyeOpen), 입 펄스(mouthScale)
-  - eat()에서 먹이에 닿으면 bite()로 입 펄스 트리거
-  - checkPetting()에서 손 진입 시 blink()로 눈 깜빡임 트리거
-───────────────────────────────────────────────────────────────*/
+*/
 
 class Creature {
   constructor(position, dna) {
@@ -26,7 +21,7 @@ class Creature {
 
     this.maxspeed = map(this.dna.genes[0], 0, 1, 0.7, 0.1);     // 사이즈가 클수록 느려지도록 3~1
     this.initMaxSpeed = this.maxspeed;        // 처음 배정된 최대속도 저장
-    this.r = map(this.dna.genes[0], 0, 1, 2, 16);    // 사이즈가 클수록 느려지도록
+    this.r = map(this.dna.genes[0], 0, 1, 2, 8);    // 사이즈가 클수록 느려지도록
     this.isBorder = false;
 
     const pal = this.dna?.genes?.[1] || {};       //   색
@@ -241,6 +236,7 @@ class Creature {
     }
 
     if (this.touching) {
+      // this.currentColor = color('pink');     // 터치 확인용
       // 연속 접촉 시간 누적 (쿨다운이 아닐 때만)
       this.touchHoldMs += dt;
 
@@ -541,11 +537,6 @@ class Creature {
     if (this.health < this.initHealth * 0.2) {  // 체력이 20%로 줄어들면
       this.maxspeed = 0.1;      // 느려짐
     }
-    // if (this.maxspeed >= 0) {     //
-    //   this.maxspeed -= 0.001;    // 체력이 줄어들수록 최대 속도도 줄어듦
-    // } else {
-    //   this.maxspeed += 0.001;
-    // }
   }
 
   // 화면 경계 처리 함수
@@ -568,9 +559,7 @@ class Creature {
       this.isBorder = true;
       this.position.y = m - r;
     }
-
   }
-
 
   // 화면에 표시하는 메서드(상속됨)
   show() {
@@ -597,6 +586,5 @@ class Creature {
   dead() {
     return this.health < 0.0;
   }
-
 
 }

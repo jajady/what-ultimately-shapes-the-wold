@@ -14,8 +14,22 @@ class World {
     for (let i = 0; i < populationSize; i++) {
       const creatureCount = 2;      // 생명체 종류 개수
       const pick = floor(random(creatureCount)) + 1   // 생명체 종류 중 하나를 뽑음
-      // console.log(pick);               
-      let position = createVector(random(margin, width - margin), random(margin, height - margin)); // 랜덤한 위치에 생성
+      // console.log(pick);  
+
+      // 디스크 균일 분포: r은 sqrt를 써야 면적 균일
+      const Rmax = max(0, (height / 2) - margin); // margin만큼 가장자리 여유
+      const theta = random(TWO_PI);
+      const r = sqrt(random()) * Rmax;         // ★ sqrt(random())가 포인트를 균일하게 퍼뜨림
+
+      // ✅ 중심 원 내부 좌표 재사용
+      const position = randomPosInCenterDisk({
+        // 필요 없으면 생략 가능 — 기본값: min(width,height)/2 - margin
+        radius: Math.min(width, height) / 2 - margin,
+        // innerRadius: 80,   // 도넛으로 만들고 싶으면 옵션으로
+        // center: createVector(width/2, height/2) // 기본값이라 보통은 생략
+      });
+
+      // let position = createVector(random(margin, width - margin), random(margin, height - margin)); // 랜덤한 위치에 생성
       let dna = new DNA();
       // this.creatures.push(new Creature(position, dna));
       if (pick === 1) {

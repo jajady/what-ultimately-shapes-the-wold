@@ -15,7 +15,8 @@ class Food {
     ];
 
     for (let i = 0; i < num; i++) {
-      this.foodPositions.push(createVector(random(margin, width - margin), random(margin, height - margin)));
+      // this.foodPositions.push(createVector(random(margin, width - margin), random(margin, height - margin)));
+      this.foodPositions.push(randomPosInCenterDisk());
       this.r.push(1);
 
       // ★ 색상 중 하나를 랜덤하게 선택

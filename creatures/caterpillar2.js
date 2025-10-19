@@ -2,7 +2,7 @@ class Caterpillar2 extends Creature {
   constructor(position, dna) {
     super(position, dna);
 
-    this.r = this.r * 1.7;
+    this.r = this.r * 1.5;
     this.kind = "Caterpillar";
     this.eats = [];
     this.fears = ["Bug"];

@@ -84,17 +84,17 @@ function updateZoomState() {
 
 /* HUD / 디버그 표시 */
 function drawHUD() {
-  push();
-  noStroke();
-  fill(255);
-  textSize(12);
-  textAlign(RIGHT, TOP);
-  text(
-    `zoom: ${zoom.toFixed(2)}\n` +
-    `target: ${targetZoom.toFixed(2)}\n`,
-    width - 10, 10
-  );
-  pop();
+  if (debug) {
+    noStroke();
+    fill(255);
+    textSize(12);
+    textAlign(RIGHT, TOP);
+    text(
+      `zoom: ${zoom.toFixed(2)}\n` +
+      `target: ${targetZoom.toFixed(2)}\n`,
+      width - 10, 10
+    );
+  }
 }
 
 function screenToWorld(pt) {

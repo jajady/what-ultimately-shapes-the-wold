@@ -19,9 +19,9 @@ class Creature {
     this.initHealth = map(this.dna.genes[0], 0, 1, 150, 550);    // 생명 초기값
     this.health = 0;      // 생명 타이머 (수명)
 
-    this.maxspeed = map(this.dna.genes[0], 0, 1, 0.7, 0.1);     // 사이즈가 클수록 느려지도록 3~1
+    this.maxspeed = map(this.dna.genes[0], 0, 1, 0.5, 0.1);     // 사이즈가 클수록 느려지도록 3~1
     this.initMaxSpeed = this.maxspeed;        // 처음 배정된 최대속도 저장
-    this.r = map(this.dna.genes[0], 0, 1, 2, 8);    // 사이즈가 클수록 느려지도록
+    this.r = map(this.dna.genes[0], 0, 1, 1, 5);    // 사이즈가 클수록 느려지도록
     this.isBorder = false;        // 경계 관리
 
     // 스폰(등장) 상태
@@ -63,7 +63,16 @@ class Creature {
 
     this.buffActive = false;     // 3초 버프 on/off
     this.buffEndMs = 0;          // 버프 종료 시각 (millis)
-    this.buffScale = 1.2;        // 살짝 커지는 정도(1.1~1.3 추천)
+    this.buffScaleBase = 1.0;           // 평상시 스케일
+    this.buffScalePeak = 1.5;           // 버프 시 목표 스케일(원래 buffScale 값)
+    this.buffScaleNow = 1.0;           // 현재 표시용 스케일(애니메이션 결과)
+    // 애니메이션 내부 상태
+    this._buffAnimStart = 0;            // 애니메이션 시작 시간(ms)
+    this._buffAnimDur = 350;          // 올라가거나 내려가는 데 걸리는 시간(ms)
+    this._buffAnimating = false;        // 지금 보간 중인가?
+    this._buffFrom = 1.0;          // 시작 값
+    this._buffTo = 1.0;          // 목표 값
+
     // ▼ 진화 쿨다운(5초) 관련 추가
     this.evoCooldownMs = 5000;      // 진화 후 5초간 막힘
     this._evoCooling = false;       // 쿨다운 중인가?
@@ -188,7 +197,8 @@ class Creature {
 
   // ★ 현재 표시용 스케일
   getVisualScale() {
-    return this.buffActive ? this.buffScale : 1.0;
+    // 스폰 중 크기 변화(this.spawnScale)와 버프 스케일(this.buffScaleNow)을 곱해 합성
+    return (this.spawnScale ?? 1.0) * this.buffScaleNow;
   }
 
   // ★ 기본 깜빡임 메서드 (서브클래스에서 필요시 override)
@@ -308,14 +318,40 @@ class Creature {
 
   // ★ 버프 켜기
   activateBuff(durationMs) {
+    const now = millis();
+
     this.buffActive = true;
-    this.buffEndMs = millis() + durationMs;
+    this.buffEndMs = now + durationMs;
+
+    // ✔ 올라가는 애니메이션(현재값 → peak)
+    this._buffAnimStart = now;
+    this._buffFrom = this.buffScaleNow;   // 지금 크기에서
+    this._buffTo = this.buffScalePeak;  // 목표 크기로
+    this._buffAnimating = true;
   }
 
   // ★ 버프 종료 체크
   updateBuff() {
-    if (this.buffActive && millis() > this.buffEndMs) {
+    const now = millis();
+
+    // 1) 애니메이션 한 프레임 진행 (있다면)
+    if (this._buffAnimating) {
+      const tRaw = (now - this._buffAnimStart) / this._buffAnimDur;
+      const u = constrain(tRaw, 0, 1);          // 0~1
+      const ease = (x) => x * x * (3 - 2 * x);  // smoothstep(부드러운 S-curve)
+      this.buffScaleNow = lerp(this._buffFrom, this._buffTo, ease(u));
+      if (u >= 1) this._buffAnimating = false;  // 끝나면 정지
+    }
+
+    // 2) 버프 지속 시간 끝나면 "부드럽게 내려가기" 시작
+    if (this.buffActive && now > this.buffEndMs) {
       this.buffActive = false;
+
+      // ✔ 내려가는 애니메이션(현재값 → base)
+      this._buffAnimStart = now;
+      this._buffFrom = this.buffScaleNow;    // 지금 크기에서
+      this._buffTo = this.buffScaleBase;   // 원래 크기로
+      this._buffAnimating = true;
     }
   }
 

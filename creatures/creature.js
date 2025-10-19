@@ -17,12 +17,18 @@ class Creature {
     this.dna = dna; // DNA
     // this.initHealth = 200;          // 생명 초기값
     this.initHealth = map(this.dna.genes[0], 0, 1, 150, 550);    // 생명 초기값
-    this.health = this.initHealth;      // 생명 타이머 (수명)
+    this.health = 0;      // 생명 타이머 (수명)
 
     this.maxspeed = map(this.dna.genes[0], 0, 1, 0.7, 0.1);     // 사이즈가 클수록 느려지도록 3~1
     this.initMaxSpeed = this.maxspeed;        // 처음 배정된 최대속도 저장
     this.r = map(this.dna.genes[0], 0, 1, 2, 8);    // 사이즈가 클수록 느려지도록
-    this.isBorder = false;
+    this.isBorder = false;        // 경계 관리
+
+    // 스폰(등장) 상태
+    this.isSpawning = true;
+    this.spawnStartMs = millis();
+    this.spawnDurationMs = 3000;     // 3초 페이드인
+    this.spawnScale = 0.6;           // 등장 초기에 약간 작게(선택사항)
 
     const pal = this.dna?.genes?.[1] || {};       //   색
     this.baseC1 = color('#ffffff');                  // 기준색 1
@@ -200,9 +206,9 @@ class Creature {
     }
   }
 
-  // ★ 손이 영역에 '진입'할 때만 카운트 (4회 시 버프 발동)
-  //    └ 지금은 ‘연속 접촉 시간(3초)’을 누적/판정하는 방식으로 변경됨.
+  // ★ 손이 ‘연속 접촉 시간(3초)’ 카운트.
   checkPetting() {
+    if (this.isSpawning) return;      // 등장 중엔 먹이를 못 먹게
     // 경과 시간 계산
     const now = millis();
     const dt = now - this._lastUpdateMs;
@@ -533,9 +539,27 @@ class Creature {
     }
 
     this.position.add(this.velocity);
-    this.health -= 0.1;       // 체력이 점점 줄어듦
-    if (this.health < this.initHealth * 0.2) {  // 체력이 20%로 줄어들면
-      this.maxspeed = 0.1;      // 느려짐
+
+    // ▼ 스폰(등장) 중이면 health를 0→initHealth로 3초간 보간
+    if (this.isSpawning) {
+      const tRaw = (millis() - this.spawnStartMs) / this.spawnDurationMs;
+      // 부드러운 이징(원한다면): u*u*(3-2*u). 선형이면 그냥 t=constrain(tRaw,0,1)
+      const u = constrain(tRaw, 0, 1);
+      const t = u * u * (3 - 2 * u);
+
+      this.health = lerp(0, this.initHealth, t);
+      this.spawnScale = lerp(0.6, 1.0, t);   // 살짝 커지며 등장(선택)
+
+      if (u >= 1) {
+        this.isSpawning = false;
+        this.spawnScale = 1.0;
+        this.health = this.initHealth;       // 스폰 종료 시 정확히 정착
+      }
+    } else {
+      this.health -= 0.1;       // 체력이 점점 줄어듦
+      if (this.health < this.initHealth * 0.2) {  // 체력이 20%로 줄어들면
+        this.maxspeed = 0.1;      // 느려짐
+      }
     }
   }
 

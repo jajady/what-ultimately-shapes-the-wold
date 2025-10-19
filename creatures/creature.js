@@ -26,7 +26,8 @@ class Creature {
 
     this.maxspeed = map(this.dna.genes[0], 0, 1, 0.7, 0.1);     // 사이즈가 클수록 느려지도록 3~1
     this.initMaxSpeed = this.maxspeed;        // 처음 배정된 최대속도 저장
-    this.r = map(this.dna.genes[0], 0, 1, 2, 4);    // 사이즈가 클수록 느려지도록
+    this.r = map(this.dna.genes[0], 0, 1, 2, 16);    // 사이즈가 클수록 느려지도록
+    this.isBorder = false;
 
     const pal = this.dna?.genes?.[1] || {};       //   색
     this.baseC1 = color('#ffffff');                  // 기준색 1
@@ -549,11 +550,25 @@ class Creature {
 
   // 화면 경계 처리 함수
   borders() {
-    const m = 50;
-    if (this.position.x < m - this.r) this.position.x = width - m + this.r;
-    if (this.position.y < this.r) this.position.y = height + this.r;
-    if (this.position.x > width + this.r) this.position.x = -this.r;
-    if (this.position.y > height + this.r) this.position.y = -this.r;
+    const m = 0;
+    const r = this.r * 2;
+    if (this.position.x < m - r) {
+      this.isBorder = true;
+      this.position.x = width - m + r;
+    }
+    if (this.position.y < m - r) {
+      this.isBorder = true;
+      this.position.y = height + - m + r;
+    }
+    if (this.position.x > width - m + r) {
+      this.isBorder = true;
+      this.position.x = m - r;
+    }
+    if (this.position.y > height - m + r) {
+      this.isBorder = true;
+      this.position.y = m - r;
+    }
+
   }
 
 

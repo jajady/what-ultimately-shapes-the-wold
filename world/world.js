@@ -19,7 +19,7 @@ class World {
       let dna = new DNA();
       // this.creatures.push(new Creature(position, dna));
       if (pick === 1) {
-        this.creatures.push(new Caterpillar(position, dna));
+        this.creatures.push(new Caterpillar2(position, dna));
       } else {
         this.creatures.push(new Headset(position, dna));
       }

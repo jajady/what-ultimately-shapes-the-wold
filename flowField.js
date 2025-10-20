@@ -76,7 +76,7 @@ class FlowField {
         translate(x, y);
         const a = createVector(-dir.x, -dir.y);
         const b = createVector(dir.x, dir.y);
-        line(a.x, a.y, b.x * 3, b.y * 3);
+        line(a.x, a.y, b.x * 200, b.y * 200);
         const L = dir.copy().rotate(-3 / 4 * PI).setMag(5);
         const R = dir.copy().rotate(3 / 4 * PI).setMag(5);
         // line(b.x, b.y, b.x + L.x, b.y + L.y);

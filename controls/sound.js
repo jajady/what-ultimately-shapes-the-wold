@@ -8,7 +8,7 @@ function ensureAudio() {
 }
 
 // 부드러운 페이드 아웃/인 도우미
-function fadeOutAndStop(snd, sec = 0.6) {
+function fadeOutAndStop(snd, sec = 10.0) {
   if (!snd) return;
   snd.setVolume(0, sec);                   // sec초 동안 0으로 페이드
   setTimeout(() => snd.stop(), sec * 1000);

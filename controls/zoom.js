@@ -91,7 +91,8 @@ function drawHUD() {
     textAlign(RIGHT, TOP);
     text(
       `zoom: ${zoom.toFixed(2)}\n` +
-      `target: ${targetZoom.toFixed(2)}\n`,
+      `target: ${targetZoom.toFixed(2)}\n` +
+      `stage: ${stage}\n`,
       width - 10, 10
     );
   }

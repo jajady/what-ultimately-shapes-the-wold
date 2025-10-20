@@ -128,7 +128,7 @@ class Caterpillar2 extends Creature {
     for (let i = this.circles.length - 1; i >= 1; i--) {
       const amt = map(i, this.circles.length - 1, 0, 0, 1);
       const bodyColor = lerpColor(baseColor, headColor, amt);
-      fill(bodyColor);
+
 
       // 털
       if (this.showFur) {
@@ -153,17 +153,20 @@ class Caterpillar2 extends Creature {
         pop();
       }
 
-      ellipse(this.circles[i].x, this.circles[i].y, r, r);  // 몸통
-
       // 줄무늬
       if (this.showStripes) {
         push();
         translate(this.circles[i].x, this.circles[i].y);
-        stroke(this.c3);
-        strokeWeight(0.1 * s);
-        noFill();
-        rectMode(CENTER);
-        ellipse(0, 0, r, r);    // 세로 줄
+
+        if (i % 2 === 0) {    // 세로 줄 번갈아 나타내기
+          stroke(this.c3);
+          strokeWeight(0.3 * s);   // 스트로크 ->  세로 줄 있음
+          ellipse(0, 0, r, r);
+        } else {
+          noStroke();             // 세로 줄 없음
+          fill(bodyColor);
+          ellipse(0, 0, r, r);
+        }
 
         fill(this.c4);
         rotate(PI * 2 / 6);       // 점
@@ -175,6 +178,9 @@ class Caterpillar2 extends Creature {
         rotate(PI * 2 / 6);
         circle(0, this.r * -0.4 * s, this.r * s * 0.1 * s);
         pop();
+      } else {
+        fill(bodyColor);
+        ellipse(this.circles[i].x, this.circles[i].y, r, r);  // defalt 상태 몸통
       }
     }
 

@@ -25,6 +25,9 @@ class World {
 
     // stage4 진입 1회성 리더 지정 플래그
     this._leadersAssignedAtStage4 = false;
+
+    // ★ stage3 진입 시각(강제 넘어감 타이머용)
+    this._stage3EnteredMs = null;
   }
 
   // 매 프레임 실행
@@ -51,9 +54,6 @@ class World {
 
         const home = centersBySize[i] || centersBySize[centersBySize.length - 1];
         if (home) c.home = createVector(home.x, home.y);
-
-        // 콘솔 확인용
-        // console.log(`[LEADER] rank=${c.leaderRank}, level=${c.level || 0}, kind=${c.kind || 'Creature'}`);
       });
 
       this._leadersAssignedAtStage4 = true;
@@ -81,9 +81,10 @@ class World {
 
   // ─────────────────────────────
   // 자동 스테이지 전환
-  // 1→2 : 3초 연속 접촉 달성(everTouched3s) 개체 ≥ 10
-  // 2→3 : isColored 개체 ≥ 10
+  // 1→2 : 3초 연속 접촉 달성(everTouched3s) 개체 ≥ 20
+  // 2→3 : isColored 개체 ≥ 15
   // 3→4 : isHalo   개체 ≥ 10
+  // + 보조 : stage3가 된 뒤 15초 지났는데도 아직 stage4가 아니면 강제 4로
   // ─────────────────────────────
   _autoAdvanceStage() {
     const total = this.creatures.length;
@@ -101,6 +102,14 @@ class World {
     const goStage = (next) => {
       if (stage === next) return;
       stage = next;
+
+      // ★ stage3 타임스탬프 기록/리셋
+      if (stage === 3) {
+        this._stage3EnteredMs = millis();
+      } else if (stage !== 3) {
+        this._stage3EnteredMs = null;
+      }
+
       if (typeof ensureAudio === 'function') ensureAudio();
       if (typeof playStageMusic === 'function') playStageMusic(stage);
       console.log('stage →', stage);
@@ -111,15 +120,31 @@ class World {
       goStage(2);
       return;
     }
+
     // 2 -> 3 : isColored 개체 15+
     if (stage === 2 && coloredCnt >= 15) {
       goStage(3);
       return;
     }
+
+    // ★ 현재가 stage 3인데, 처음 들어온 프레임이라 타임스탬프가 없다면 기록
+    if (stage === 3 && this._stage3EnteredMs == null) {
+      this._stage3EnteredMs = millis();
+    }
+
     // 3 -> 4 : isHalo 개체 10+
     if (stage === 3 && haloCnt >= 10) {
       goStage(4);
       return;
+    }
+
+    // ★ 보조 규칙: stage3가 된 뒤 15초가 지났는데 아직 4가 아니면 강제 4로
+    if (stage === 3 && this._stage3EnteredMs != null) {
+      const elapsed = millis() - this._stage3EnteredMs;
+      if (elapsed >= 15000) {
+        goStage(4);
+        return;
+      }
     }
   }
 }

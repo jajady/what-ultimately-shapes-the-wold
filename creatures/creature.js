@@ -58,6 +58,7 @@ class Creature {
     // (기존: wasHandInside / strokeCount 기반 ‘쓰다듬기’ → 변경: 연속 접촉 시간 기반)
     this.touching = false;               // 지금 손에 닿아 있는지
     this.touchHoldMs = 0;                // 연속 접촉 누적 시간(ms)
+    this.everTouched3s = false;          // 한 번이라도 3초 연속 접촉(쓰다듬기) 달성?
     this.touchThresholdMs = 3000;        // 임계치: 3초
     this.touchTriggered = false;         // (이제 사용 안 해도 되지만 남겨둬도 무방)
     this._lastUpdateMs = millis();       // 프레임 간 경과시간 계산용
@@ -261,6 +262,8 @@ class Creature {
       if (this.touchHoldMs >= this.touchThresholdMs) {
         // 버프(커짐) 발동
         this.activateBuff(3000);
+        // 스테이지1 카운팅용: 한 번이라도 3초 달성
+        this.everTouched3s = true;
 
         // ★ 진화 처리: 단계 +1 (최대치 제한)
         if (typeof stage !== 'undefined' && stage === 2) {

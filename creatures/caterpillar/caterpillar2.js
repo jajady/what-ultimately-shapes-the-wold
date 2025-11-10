@@ -2,7 +2,7 @@ class Caterpillar2 extends Creature {
   constructor(position, dna) {
     super(position, dna);
 
-    this.r = this.r * 1.5;
+    this.r = this.r * 2.3;
     this.kind = "Caterpillar";
     this.eats = [];
     this.fears = ["Bug"];
@@ -13,12 +13,15 @@ class Caterpillar2 extends Creature {
     this.lerpAmt = 0.2;
     this.init();
 
-    // Eye(parent, offsetX, offsetY, widthMult, heightMult)
-    this.leftEye = new Eye(this, -0.35, -0.2, 0.15, 0.3);    // 눈
-    this.rightEye = new Eye(this, 0.35, -0.2, 0.15, 0.3);
+    // 파츠들 생성
+    this.eyes = new MovingEyes(this.r * 0.3);             // 눈 + 눈동자
 
     // Mouth(parent, offsetX, offsetY, widthMult, heightMult)
-    this.mouth = new Mouth(this, 0, 0.2, 0.15, 0.1);
+    this.mouth = new CaterpillerMouth(this, this.r * 0.4);
+
+    // 이 값들은 update()에서 계산해서 각 파츠에게 줌
+    this.moveVec = createVector(0, 0);
+    this.lookDir = createVector(0, 0);  // 눈이 부드럽게 따라가게 할 때 씀
 
     // 더듬이 상태 (0=없음, 1=완전 성장)
     this.antAmount = 0;        // 현재 값
@@ -38,6 +41,26 @@ class Caterpillar2 extends Creature {
   update() {
     super.update();
     this.bodyUpdate();    // 몸 내부 업데이트
+
+    // 1) 개체의 움직임
+    let move = this.velocity.copy();
+
+    // 속도가 0에 가까우면 눈이 흔들리니까 부드럽게
+    if (move.mag() > 0.0001) {
+      // 눈이 얼굴 밖으로 튀어나가지 않도록 얼굴 크기 기준으로 제한
+      move.setMag(this.r * 0.8);   // 얼굴 반지름의 25%만 이동
+      this.moveVec = move;
+    }
+
+    // (선택) 프레임마다 튀는 거 싫으면 이렇게 스무딩
+    this.lookDir.lerp(this.moveVec, 0.04);   // 0.2는 반응속도
+
+    // 2) 각 파츠에 “얼마나 따라갈지” 알려주기
+    // 파츠마다 비율이 다름 (원래 코드랑 같은 값)
+    // this.ears.setMove(move, -0.3);       // 귀는 반대 방향으로 살짝
+    this.eyes.setMove(move, 0.1);
+    this.mouth.setMove(move, 0.2);
+    this.mouth.update();
   }
 
   bodyUpdate() {
@@ -60,15 +83,8 @@ class Caterpillar2 extends Creature {
         }
       }
     }
-    this.mouth.update();
     // ★ 더듬이 양 보간
     this.antAmount = lerp(this.antAmount, this.antTarget, this.antSpeed);
-  }
-
-  // ✅ Creature.checkPetting()이 매 프레임 이걸 호출함
-  blink(isTouching) {
-    this.leftEye.update(isTouching);
-    this.rightEye.update(isTouching);
   }
 
   // ★ 진화 훅: 2단계가 되면 더듬이 타겟을 1로
@@ -124,7 +140,7 @@ class Caterpillar2 extends Creature {
     ellipseMode(CENTER);
     noStroke();
 
-    // 머리는 index 0 이므로 1..len-1만 몸통으로 그림
+    // 머리는 index 0. 1..len-1만 즉, 머리 제외 몸통 먼저 그림
     for (let i = this.circles.length - 1; i >= 1; i--) {
       const amt = map(i, this.circles.length - 1, 0, 0, 1);
       const bodyColor = lerpColor(baseColor, headColor, amt);
@@ -222,9 +238,17 @@ class Caterpillar2 extends Creature {
     ellipse(this.circles[0].x, this.circles[0].y, r, r);
 
     // ───────── 4) 눈/입 ─────────
-    this.leftEye.show();
-    this.rightEye.show();
+    push();
+    translate(x, y);
+    this.eyes.show();
     this.mouth.show();
+    pop();
+
+
+    // ★ 눈에게 현재 터치 상태 전달 (Octo에만 eyes가 있으므로 여기서 연결)
+    if (this.eyes && typeof this.eyes.setTouching === 'function') {
+      this.eyes.setTouching(this.touching);
+    }
   }
 
   init() {    // 몸통 원 위치 저장 배열 생성

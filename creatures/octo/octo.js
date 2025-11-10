@@ -9,14 +9,12 @@ class Octo extends Creature {
     // 파츠들 생성
     this.head = new OctoHead(this.r);                    // 얼굴 원
     this.eyes = new OctoEyes(this.r * 0.66);             // 눈 + 눈동자
-    this.mouth = new octoMouth(this.r * 0.5);
+    this.mouth = new OctoMouth(this, this.r * 0.4);
 
     // 이 값들은 update()에서 계산해서 각 파츠에게 줌
     this.moveVec = createVector(0, 0);
     this.lookDir = createVector(0, 0);  // 눈이 부드럽게 따라가게 할 때 씀
 
-    // 눈은 base blink가 관리 → 초기값만 있으면 됨
-    this.eyeOpen = 1.0;
 
     // 시각적 요소(Decorations)
     this.showBlusher = false;   // 볼터치
@@ -43,7 +41,7 @@ class Octo extends Creature {
   update() {
     super.update();
 
-    // 1) 얼굴 중심과 마우스의 차이 벡터 구하기
+    // 1) 개체의 움직임
     let move = this.velocity.copy();
 
     // 속도가 0에 가까우면 눈이 흔들리니까 부드럽게
@@ -64,17 +62,13 @@ class Octo extends Creature {
     this.mouth.setMove(move, 0.5);
     // this.eyebrows.setMove(move, 0.6);
     // this.hair.setMove(move, 0.3);
-    // head(얼굴원)는 따라갈 필요 없음 → 그냥 0,0에 그릴 거라서
+    this.mouth.update();
   }
 
   show() {
     // 1) 버프 스케일
     const s = this.getVisualScale();
     const r = this.r * s;
-
-    // 2) 입(펄스) 상태 업데이트
-    //    - 먹이 접촉 상승 에지에서 내부적으로 시퀀스 시작
-    // this.mouth.update(this.touchedFood);
 
     // === 지속 후광 ===
     if (this.isHalo) {
@@ -149,37 +143,6 @@ class Octo extends Creature {
     fill(this.currentColor);
     this.head.show();
 
-    // 이동 방향 → 귀 회전 목표
-    const th = PI / 12;
-    let targetAngle = 0;
-    if (this.velocity.x > 0.2) targetAngle = th;
-    if (this.velocity.x < -0.2) targetAngle = -th;
-    this._earAngle = lerp(this._earAngle, targetAngle, this._earEase);
-
-    // 눈 치수
-    const eyeCxL = -r * 0.25, eyeCxR = r * 0.25, eyeCy = -r * 0.33;
-    const eyeW = r * 0.25, eyeH = r * 0.5 * this.eyeOpen;
-    const irisW = r * 0.10, irisH = r * 0.20 * this.eyeOpen;
-
-    // 속눈썹(2단계~)
-    // if (this.showEyelash) {
-    //   const lidTopY = eyeCy - eyeH * 0.5;
-    //   const nearCenter = eyeCy - r * 0.05;
-    //   const t = 1 - this.eyeOpen;
-    //   const lashEndY = lerp(lidTopY, nearCenter, constrain(t, 0, 1));
-    //   const lashLen = r * 0.12;
-
-    //   stroke(0);
-    //   strokeWeight(max(0.5, r * 0.01));
-    //   noFill();
-    //   line(eyeCxL, eyeCy, eyeCxL - lashLen, lashEndY);
-    //   line(eyeCxR, eyeCy, eyeCxR + lashLen, lashEndY);
-    //   noStroke();
-    // }
-
-    this.eyes.show();
-
-
     /* ── 블러셔(2단계~) ── */
     if (this.showBlusher) {
       push();
@@ -194,6 +157,9 @@ class Octo extends Creature {
       ellipse(0, 0, r * 0.5, r * 0.2);
       pop();
     }
+
+    this.mouth.show();
+    this.eyes.show();
 
     /* ── 외곽 호(5단계~) ── */
     if (this.showArc) {
@@ -214,9 +180,5 @@ class Octo extends Creature {
       this.eyes.setTouching(this.touching);
     }
 
-    // === 입(공용 Mouth) ===
-    // Mouth.show()는 부모 절대좌표를 스스로 계산하므로
-    // translate 바깥에서 호출해도 OK
-    this.mouth.show();
   }
 }

@@ -1,5 +1,4 @@
-// ====================== Eyes (눈 + 눈동자 + 깜빡임) ======================
-class OctoEyes {
+class MovingEyes {
   constructor(r) {
     // 눈 전체 위치 이동
     this.offset = createVector(0, 0);
@@ -8,7 +7,7 @@ class OctoEyes {
 
     // 눈 크기 관련
     this.r = r;
-    this.pupilLimit = this.r; // 눈동자가 너무 멀리 안 움직이게 제한
+    this.pupilLimit = this.r * 0.7; // 눈동자가 너무 멀리 안 움직이게 제한
 
     // 깜빡임 관련 상태
     this.eyeOpen = 1.0;     // 눈 열림 정도 (1=완전 열림, 0=완전 감김)
@@ -23,10 +22,10 @@ class OctoEyes {
   setMove(baseMove, factor) {
     this.offset = baseMove.copy().mult(factor);   // 전체 눈 위치 이동
     this.pupilOffset = baseMove.copy();           // 눈동자만 따로 이동
-    // this.pupilOffset.limit(this.pupilLimit);      // 눈 밖으로 못 나가게 제한
+    this.pupilOffset.limit(this.pupilLimit);      // 눈 밖으로 못 나가게 제한
   }
 
-  // 외부(Octo)가 손 닿음 여부를 전달할 때 호출
+  // caterpiller이 손 닿음 여부를 전달할 때 호출
   setTouching(flag) {
     this._touching = !!flag;
     if (!this._touching) this._blinking = false;  // 손을 떼면 깜빡임 멈춤
@@ -98,4 +97,6 @@ class OctoEyes {
 
     pop();
   }
+
+
 }

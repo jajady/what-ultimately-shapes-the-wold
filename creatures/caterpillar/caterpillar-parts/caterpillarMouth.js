@@ -1,4 +1,4 @@
-class OctoMouth {
+class CaterpillerMouth {
   constructor(parent, r) {
     this.parent = parent;
     this.r = r;   // 75
@@ -72,9 +72,9 @@ class OctoMouth {
   show() {
     push();
     translate(this.offset.x, this.offset.y);
-    const mouthY = this.r * 1.3;
-    const mouthW = this.r;
-    const mouthH = this.r * 0.4 * this.open;
+    const mouthY = this.r * 0.4;
+    const mouthW = this.r * 0.6;
+    const mouthH = this.r * 0.3 * this.open;
 
     fill('black');
     ellipse(0, mouthY, mouthW, mouthH);   // 입

@@ -55,13 +55,9 @@ class Octo extends Creature {
     this.lookDir.lerp(this.moveVec, 0.04);   // 0.2는 반응속도
 
     // 2) 각 파츠에 “얼마나 따라갈지” 알려주기
-    // 파츠마다 비율이 다름 (원래 코드랑 같은 값)
-    // this.ears.setMove(move, -0.3);       // 귀는 반대 방향으로 살짝
+    // this.ears.setMove(move, -0.3);       // 귀는 반대 방향
     this.eyes.setMove(move, 0.5);    // 눈은 0.5배, 눈동자는 20px 제한
-    // this.nose.setMove(move, 0.7);
     this.mouth.setMove(move, 0.5);
-    // this.eyebrows.setMove(move, 0.6);
-    // this.hair.setMove(move, 0.3);
     this.mouth.update();
   }
 

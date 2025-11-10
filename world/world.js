@@ -23,6 +23,27 @@ class World {
     // 먹이
     this.food = new Food(populationSize * 0.75);
 
+    // --- ★ Boid 무리 생성 ---
+    this.flock = new Flock();
+    const boidCount = 80; // boid 개수
+
+    // 중심 좌표 계산
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    // 중심 근처 (반경 100px 정도의 원 안)
+    const spawnRadius = 100;
+
+    for (let i = 0; i < boidCount; i++) {
+      const angle = random(TWO_PI);     // 0~360도 방향
+      const r = random(spawnRadius);    // 반경 0~100px
+      const x = centerX + cos(angle) * r;
+      const y = centerY + sin(angle) * r;
+
+      this.flock.addBoid(new Boid(x, y));
+    }
+
+
     // stage4 진입 1회성 리더 지정 플래그
     this._leadersAssignedAtStage4 = false;
 
@@ -73,6 +94,11 @@ class World {
         const child = c.reproduce();
         if (child) this.creatures.push(child);
       }
+    }
+
+    // --- ★ Boid 무리 업데이트 + 먹이 추적/섭취 ---
+    if (this.flock) {
+      this.flock.run(this.food);
     }
 
     // 조건 충족 시 자동 스테이지 전환

@@ -2,14 +2,14 @@ class Octo extends Creature {
   constructor(position, dna) {
     super(position, dna);
 
-    this.kind = "Octo";
-    this.eats = ["Bug", "Caterpillar"];
-    this.fears = [""];
+    // this.kind = "Octo";
+    // this.eats = ["Bug", "Caterpillar"];
+    // this.fears = [""];
 
     // 파츠들 생성
-    this.head = new OctoHead(this, this.r);                    // 얼굴 원
-    this.eyes = new OctoEyes(this, this.r * 0.66);             // 눈 + 눈동자
-    this.mouth = new OctoMouth(this, this.r * 0.4);
+    this.head = new OctoHead(this, this.r);            // 얼굴 원
+    this.eyes = new OctoEyes(this, this.r * 0.33);     // 눈 + 눈동자
+    this.mouth = new OctoMouth(this, this.r * 0.2);
 
     // 이 값들은 update()에서 계산해서 각 파츠에게 줌
     this.moveVec = createVector(0, 0);
@@ -56,8 +56,8 @@ class Octo extends Creature {
 
     // 2) 각 파츠에 “얼마나 따라갈지” 알려주기
     // this.ears.setMove(move, -0.3);       // 귀는 반대 방향
-    this.eyes.setMove(move, 0.6);    // 눈은 0.5배, 눈동자는 20px 제한
-    this.mouth.setMove(move, 0.5);
+    this.eyes.setMove(move, 0.3);    // 눈은 0.5배, 눈동자는 20px 제한
+    this.mouth.setMove(move, 0.25);
     this.mouth.update();
   }
 
@@ -135,7 +135,7 @@ class Octo extends Creature {
       noStroke();
     }
 
-    /* ── 몸통 ── */
+    /* ── 머리 ── */
     fill(this.currentColor);
     this.head.show();
 

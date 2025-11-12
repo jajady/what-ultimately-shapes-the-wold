@@ -72,7 +72,7 @@ class OctoMouth {
   show() {
     push();
     translate(this.offset.x, this.offset.y);
-    const mouthY = this.r * 1.3;
+    const mouthY = this.r * 1.4;
     const mouthW = this.r;
     const mouthH = this.r * 0.4 * this.open;
 

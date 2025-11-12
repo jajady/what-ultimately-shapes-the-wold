@@ -7,6 +7,6 @@ class OctoHead {
 
   show() {
     fill(this.parent.currentColor);
-    ellipse(0, 0, this.r * 2, this.r * 2);   // 얼굴 본체
+    ellipse(0, 0, this.r, this.r);   // 얼굴 본체
   }
 }

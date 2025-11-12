@@ -2,7 +2,7 @@ class Caterpillar extends Creature {
   constructor(position, dna) {
     super(position, dna);
 
-    this.r = this.r * 2;
+    // this.r = this.r * 2;
     this.kind = "Caterpillar";
     this.eats = [];
     this.fears = ["Bug"];
@@ -14,10 +14,8 @@ class Caterpillar extends Creature {
     this.init();
 
     // 파츠들 생성
-    this.eyes = new MovingEyes(this, this.r * 0.3);             // 눈 + 눈동자
-
-    // Mouth(parent, offsetX, offsetY, widthMult, heightMult)
-    this.mouth = new CaterpillerMouth(this, this.r * 0.4);
+    this.eyes = new CaterpillarEyes(this, this.r * 0.33);   // 눈 + 눈동자
+    this.mouth = new CaterpillerMouth(this, this.r * 0.2);
 
     // 이 값들은 update()에서 계산해서 각 파츠에게 줌
     this.moveVec = createVector(0, 0);
@@ -58,8 +56,8 @@ class Caterpillar extends Creature {
     // 2) 각 파츠에 “얼마나 따라갈지” 알려주기
     // 파츠마다 비율이 다름 (원래 코드랑 같은 값)
     // this.ears.setMove(move, -0.3);       // 귀는 반대 방향으로 살짝
-    this.eyes.setMove(move, 0.1);
-    this.mouth.setMove(move, 0.2);
+    this.eyes.setMove(move, 0.3);
+    this.mouth.setMove(move, 0.25);
     this.mouth.update();
   }
 
@@ -100,8 +98,8 @@ class Caterpillar extends Creature {
     // 1) 버프 스케일
     const s = this.getVisualScale();
     const r = this.r * s;
-    const x = this.position.x;
-    const y = this.position.y;
+    // const x = this.position.x;
+    // const y = this.position.y;
 
     // === 지속 후광 ===
     if (this.isHalo) {
@@ -109,7 +107,7 @@ class Caterpillar extends Creature {
       const pulse = 0.6 + 0.4 * sin(frameCount * 0.05); // 살짝 숨쉬듯 펄스
       const alpha = 90 + 60 * pulse; // 알파값 변화
       fill(209, 255, 176, alpha);    // 연초록 빛 후광
-      ellipse(x, y, r * 1.8, r * 1.8);
+      ellipse(this.position.x, this.position.y, r * 1.8, r * 1.8);
     }
 
     // === 힐 연결선: 머리에서 시작 ===
@@ -239,7 +237,8 @@ class Caterpillar extends Creature {
 
     // ───────── 4) 눈/입 ─────────
     push();
-    translate(x, y);
+    // translate(this.position.x, this.position.y);
+    translate(this.circles[0].x, this.circles[0].y);   // ✅ 얼굴 중심과 동일한 원점
     this.eyes.show();
     this.mouth.show();
     pop();

@@ -20,7 +20,7 @@ class Creature {
 
     this.maxspeed = map(this.dna.genes[0], 0, 1, 0.8, 0.3);     // 사이즈가 클수록 느려지도록 3~1
     this.initMaxSpeed = this.maxspeed;        // 처음 배정된 최대속도 저장
-    this.r = map(this.dna.genes[0], 0, 1, 1, 5);    // 사이즈가 클수록 느려지도록
+    this.r = map(this.dna.genes[0], 0, 1, 2, 10);    // 사이즈가 클수록 느려지도록
     this.isBorder = false;        // 경계 관리
 
     // 스폰(등장) 상태

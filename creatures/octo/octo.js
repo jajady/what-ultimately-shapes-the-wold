@@ -10,6 +10,7 @@ class Octo extends Creature {
     this.head = new OctoHead(this, this.r);            // 얼굴 원
     this.eyes = new OctoEyes(this, this.r * 0.33);     // 눈 + 눈동자
     this.mouth = new OctoMouth(this, this.r * 0.2);
+    this.fins = new Fins(this, this.r);
 
     // 이 값들은 update()에서 계산해서 각 파츠에게 줌
     this.moveVec = createVector(0, 0);
@@ -17,11 +18,9 @@ class Octo extends Creature {
 
 
     // 시각적 요소(Decorations)
-    this.showBlusher = false;   // 볼터치
-    this.showEarShadow = false; // 귀 음영
-    this.showEyelash = false;   // 속눈썹
+    this.showBlusher = true;   // 볼터치
+    this.showEyelash = true;   // 속눈썹
     this.showFeet = false;      // 발
-    this.showHat = false;       // 모자
     this.showArc = false; // 겉에 호 그리기
 
   }
@@ -31,10 +30,7 @@ class Octo extends Creature {
   onEvolve(step) {
     // 2단계: 블러셔, 귀음영 추가,  속눈썹
     this.showBlusher = (step >= 2);
-    this.showEarShadow = (step >= 2);
-    this.showEyelash = (step >= 2);
-    this.showFeet = (step >= 3);
-    this.showHat = (step >= 4);
+    // this.showF2eet = (step >= 3);
     this.showArc = (step >= 5);
   }
 
@@ -59,6 +55,7 @@ class Octo extends Creature {
     this.eyes.setMove(move, 0.3);    // 눈은 0.5배, 눈동자는 20px 제한
     this.mouth.setMove(move, 0.25);
     this.mouth.update();
+    this.fins.setMove(move, -0.5);
   }
 
   show() {
@@ -105,6 +102,8 @@ class Octo extends Creature {
     push();
     noStroke();
     translate(this.position.x, this.position.y);
+
+    this.fins.show();
 
     /* ── 발(3단계~) ── */
     if (this.showFeet) {

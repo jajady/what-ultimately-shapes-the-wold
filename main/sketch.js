@@ -208,6 +208,10 @@ function keyPressed() {
     if (currentTrack) { fadeOutAndStop(currentTrack, 10.0); currentTrack = null; }
   }
   console.log('stage →', stage);
+
+  if (key === 's' || key === 'S') {  // 소문자 s, 대문자 S 둘 다 인식
+    saveCanvas('screenshot.png');  // 파일명 screenshot.png로 저장
+  }
 }
 
 function _pickNextStage4Color() {

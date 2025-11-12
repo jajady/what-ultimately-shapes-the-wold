@@ -8,7 +8,7 @@ class Caterpillar extends Creature {
     this.fears = ["Bug"];
 
     this.circles = [];
-    this.circleCount = 20;
+    this.circleCount = this.r * 2;
     // this.circleCount = floor(random(this.r * 2.5, this.r * 3.5));
     this.lerpAmt = 0.2;
     this.init();
@@ -98,8 +98,8 @@ class Caterpillar extends Creature {
     // 1) 버프 스케일
     const s = this.getVisualScale();
     const r = this.r * s;
-    // const x = this.position.x;
-    // const y = this.position.y;
+    const x = this.position.x;
+    const y = this.position.y;
 
     // === 지속 후광 ===
     if (this.isHalo) {

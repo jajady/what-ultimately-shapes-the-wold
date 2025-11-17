@@ -18,7 +18,7 @@ class Creature {
     this.initHealth = map(this.dna.genes[0], 0, 1, 150, 550);    // 생명 초기값
     this.health = 0;      // 생명 타이머 (수명)
 
-    this.maxspeed = map(this.dna.genes[0], 0, 1, 0.8, 0.1);     // 사이즈가 클수록 느려지도록 3~1
+    this.maxspeed = map(this.dna.genes[0], 0, 1, 1, 0.1);     // 사이즈가 클수록 느려지도록 3~1
     this.initMaxSpeed = this.maxspeed;        // 처음 배정된 최대속도 저장
     this.r = map(this.dna.genes[0], 0, 1, 1, 10);    // 사이즈가 클수록 느려지도록
     this.isBorder = false;        // 경계 관리

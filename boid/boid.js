@@ -86,7 +86,7 @@ class Boid {
 
   // Alignment: 주변 boid들과 방향/속도 맞추기
   align(boids) {
-    const neighborDistance = 30;
+    const neighborDistance = 20;
     const sum = createVector(0, 0);
     let count = 0;
 
@@ -214,9 +214,10 @@ class Boid {
     fill(255, 200);
     noStroke();
     beginShape();
-    vertex(this.r * 1, 0);       // 기존 this.r * 2 → 절반
-    vertex(-this.r * 1, -this.r * 0.5); // 기존 -this.r * 2 → 절반
-    vertex(-this.r * 1, this.r * 0.5);  // 절반
+    vertex(this.r * 1.5, 0);       // 머리
+    vertex(0, -this.r * 0.5);     // 왼
+    vertex(-this.r * 3, 0);       // 꼬리
+    vertex(0, this.r * 0.5);      // 오
     endShape(CLOSE);
     pop();
   }

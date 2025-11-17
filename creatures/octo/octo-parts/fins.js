@@ -3,7 +3,6 @@ class Fins {
     this.parent = parent;
     this.r = r;
     this.offset = createVector(0, 0);
-    // 로컬 좌표에서의 앵커(지느러미 중심) 위치
     this.leftLocal = createVector(-150, 0);
     this.rightLocal = createVector(150, 0);
 
@@ -14,21 +13,30 @@ class Fins {
     this.offset = baseMove.copy().mult(factor);
   }
 
-  // 현재 프레임에서의 앵커(월드 좌표 아님: Head 안에서 translate 후 쓰거나,
-  // Head가 pos를 더해서 월드로 변환하면 됨)
   getAnchorsLocal() {
-    // 회전 5번 그리는 건 시각 효과이고, 꼬리는 기본 방향의 중심을 따른다고 가정
     const left = p5.Vector.add(this.leftLocal, this.offset);
     const right = p5.Vector.add(this.rightLocal, this.offset);
     return { left, right };
   }
 
+  // ✅ 지느러미 ellipse 중심들의 "Octo 로컬 좌표"를 돌려주는 함수
+  getEllipseCentersLocal() {
+    const centers = [];
+    const rectLX = this.r;
+    const base = createVector(rectLX, 0);     // 회전 전 기준점
+    const step = TWO_PI / this.finCount;
+
+    for (let i = 0; i < this.finCount; i++) {
+      const v = base.copy().rotate(i * step); // 각도만큼 회전
+      v.add(this.offset);                     // fins.offset만큼 평행 이동
+      centers.push(v);
+    }
+    return centers;
+  }
+
   show() {
     push();
     translate(this.offset.x, this.offset.y);
-    // const rectX = this.r * 0.5;
-    // const rectW = this.r;
-    // const rectH = this.r * 0.05;
 
     const rectLX = this.r;
     const rectLY = - this.r * 0.025;
@@ -40,18 +48,14 @@ class Fins {
     for (let i = 0; i < this.finCount; i++) {
       strokeWeight(1);
       stroke('rgba(100, 150, 255, 0.5)');
-      fill('rgba(100, 150, 255, 0.5)');
-      if (i === 0) {
-        fill('lightpink');
-      }
-      // rectMode(CENTER);
-      rectMode(CORNERS);
-      // rect(rectX, 0, rectW, rectH);    //  지느러미 뼈대
-      rect(rectLX, rectLY, rectRX, rectRY);
+      // fill('rgba(100, 150, 255, 0.5)');
+      // if (i === 0) {
+      //   fill('lightpink');
+      // }
+      // rectMode(CORNERS);
+      // rect(rectLX, rectLY, rectRX, rectRY);
       fill('rgba(198, 216, 255, 1)');
-      // ellipse((rectX + rectW / 2), 0, ellipseW, ellipseH);    // 지느러미 끝점
       ellipse(rectLX, 0, ellipseW, ellipseH);
-
 
       rotate(TWO_PI / this.finCount);
     }

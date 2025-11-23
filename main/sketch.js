@@ -34,11 +34,11 @@ let bgFrom, bgTo, bgT = 0;
 let bgIdx = 0;
 const BG_SPEED = 0.002;  // 느리게(부드럽게) 바뀜. 0.002~0.01 사이로 취향 조절
 const STAGE4_PALETTE = [
-  '#004ad4', // 파랑
+  '#0059ffff', // 파랑
   '#009fcfff', // 시안
   '#00c98dff', // 민트
   '#faaf00ff', // 옐로
-  '#f33965ff', // 핑크/레드
+  '#ff6388ff', // 핑크/레드
 ];
 
 function setup() {

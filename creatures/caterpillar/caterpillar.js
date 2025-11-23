@@ -126,7 +126,7 @@ class Caterpillar extends Creature {
     }
 
     // === 힐 연결선: 머리에서 시작 ===
-    if (this._healTarget) {
+    if (this._healTarget && stage === 3) {
       const a = this.position;        // ← 머리 월드 좌표
       const b = this._healTarget.position;
 

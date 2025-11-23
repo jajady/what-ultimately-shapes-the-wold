@@ -59,7 +59,7 @@ class Octo extends Creature {
     this.eyes.setMove(move, 0.3);    // 눈은 0.5배, 눈동자는 20px 제한
     this.mouth.setMove(move, 0.25);
     this.mouth.update();
-    this.fins.setMove(move, -1.5);
+    this.fins.setMove(move, -1.25);
   }
 
   show() {
@@ -88,7 +88,7 @@ class Octo extends Creature {
     }
 
     // === 힐 연결선: 머리에서 시작 ===
-    if (this._healTarget) {
+    if (this._healTarget && stage === 3) {
       const a = this.position;
       const b = this._healTarget.position;
 

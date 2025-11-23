@@ -274,8 +274,7 @@ class Creature {
               const baseCol = this.dna?.genes?.[1]?.c1
                 || this.dna?.genes?.[1]
                 || this.baseC1;
-              this.baseC1 = color(baseCol);
-              this.isColored = true;
+              this._setColored(baseCol);
             }
 
             // DNA에도 단계 저장
@@ -356,6 +355,21 @@ class Creature {
       this._buffFrom = this.buffScaleNow;    // 지금 크기에서
       this._buffTo = this.buffScaleBase;   // 원래 크기로
       this._buffAnimating = true;
+    }
+  }
+
+  // ★ 색이 처음 입혀질 때 처리 + 효과음 재생
+  _setColored(baseCol) {
+    this.baseC1 = color(baseCol);
+
+    // 이미 색이 있는 상태면 사운드 중복 재생 방지
+    if (!this.isColored) {
+      this.isColored = true;
+
+      // 오디오가 준비돼 있고, 효과음이 로드되어 있다면 재생
+      if (typeof evolveSfx !== 'undefined' && evolveSfx) {
+        evolveSfx.play();
+      }
     }
   }
 

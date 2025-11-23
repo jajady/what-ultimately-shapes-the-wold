@@ -10,6 +10,8 @@ const MAX_HANDS = 2;
 let tracks = {};          // {1: SoundFile, 2: SoundFile, ...}
 let currentTrack = null;  // 현재 재생 중인 트랙
 let audioReady = false;   // 사용자 제스처로 오디오 활성화됐는지
+// 🎵 진화(색 입히기) 효과음
+let evolveSfx;
 
 function preload() {       // ml5 handpose 준비
   // handPose = ml5.handPose({ flipped: true });
@@ -27,6 +29,12 @@ function preload() {       // ml5 handpose 준비
   tracks[2] = loadSound('../assets/angelic-pad-loopwav-14643.mp3');
   tracks[3] = loadSound('../assets/016133_harmony-of-peace-56085.mp3');
   tracks[4] = loadSound('../assets/Denied Access - Density & Time.mp3');
+  // evolveSfx = loadSound('../assets/221683__timbre__another-magic-wand-spell-tinkle.flac', () => {
+  //   evolveSfx.setVolume(0.3);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
+  // });
+  evolveSfx = loadSound('../assets/magic-sparkle.mp3', () => {
+    evolveSfx.setVolume(0.2);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
+  });
 }
 
 function gotHands(results) {

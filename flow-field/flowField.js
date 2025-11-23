@@ -98,11 +98,11 @@ class FlowField {
     }
 
     // (옵션) 중심 시각화
-    noStroke();
-    for (const c of this.centers) {
-      fill('red');
-      circle(c.x, c.y, 6);
-    }
+    // noStroke();
+    // for (const c of this.centers) {
+    //   fill('red');
+    //   circle(c.x, c.y, 6);
+    // }
   }
 
   lookup(position) {

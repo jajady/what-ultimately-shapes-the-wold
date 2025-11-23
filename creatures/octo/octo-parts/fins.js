@@ -9,7 +9,7 @@ class Fins {
     this.finCount = 30;
 
     // 범위
-    this.minX = this.r * 0.4;
+    this.minX = this.r * 0.2;
     this.maxX = this.r;
 
     // 처음엔 무조건 min에서 시작

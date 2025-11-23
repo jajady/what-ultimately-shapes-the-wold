@@ -130,21 +130,21 @@ class Caterpillar extends Creature {
       const a = this.position;        // ← 머리 월드 좌표
       const b = this._healTarget.position;
 
-      const pulse = 0.5 + 0.5 * sin(frameCount * 0.3);
-      const alpha = 180 * pulse;
+      const pulse = 0.5 + 0.5 * sin(frameCount * 0.02);
+      const alpha = 50 * pulse;
 
       stroke(red(this.c2), green(this.c2), blue(this.c2), alpha);
       strokeWeight(max(1, this.r * 0.12));
       line(a.x, a.y, b.x, b.y);
 
       // 선을 따라 이동하는 점
-      const dotT = (millis() - this._healStartMs) / 400.0;
+      const dotT = (millis() - this._healStartMs) / 3200;
       const frac = dotT - floor(dotT);
       const px = lerp(a.x, b.x, frac);
       const py = lerp(a.y, b.y, frac);
       noStroke();
       fill(this.c3);
-      circle(px, py, this.r * 0.35);
+      heart(px, py, this.r * 0.35);
     }
 
     // ───────── 1) 몸통(꼬리→머리 바로 앞까지) ─────────

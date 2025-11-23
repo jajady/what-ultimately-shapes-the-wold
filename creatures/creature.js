@@ -86,7 +86,7 @@ class Creature {
 
     this.isHalo = false;          // 후광 능력 보유 여부
     this.healRange = 150;         // 탐색 반경
-    this.healDurationMs = 2000;   // 한 세션 길이(2초)
+    this.healDurationMs = 7000;   // 한 세션 길이(7초)
     this.healMaxPerSession = 150; // 한 세션에 최대 나눠주는 총 체력
     this.healMinDonorKeep = this.initHealth * 0.3; // 기부자가 최소로 유지할 체력
 

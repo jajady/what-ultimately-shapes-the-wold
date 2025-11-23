@@ -92,23 +92,21 @@ class Octo extends Creature {
       const a = this.position;
       const b = this._healTarget.position;
 
-      const pulse = 0.5 + 0.5 * sin(frameCount * 0.1);
+      const pulse = 0.5 + 0.5 * sin(frameCount * 0.02);
       const alpha = 50 * pulse;
 
-      push();
       stroke(red(this.c2), green(this.c2), blue(this.c2), alpha);
       strokeWeight(max(1, this.r * 0.12));
       line(a.x, a.y, b.x, b.y);
 
       // 선을 따라 이동하는 점
-      const dotT = (millis() - this._healStartMs) / 400.0;
+      const dotT = (millis() - this._healStartMs) / 3200;
       const frac = dotT - floor(dotT);
       const px = lerp(a.x, b.x, frac);
       const py = lerp(a.y, b.y, frac);
       noStroke();
       fill(this.c3);
-      circle(px, py, this.r * 0.35);
-      pop();
+      heart(px, py, this.r * 0.35);
     }
 
     // === 본체 그리기 ===

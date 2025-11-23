@@ -18,6 +18,9 @@ function resetSketchState() {
 
   // 4) stage4 타이머도 같이 리셋
   stage4StartMs = null;
+  stage5StartMs = null;
+  isFadingToStage5 = false;
+  fadeStartMs = null;
 
   // 5) BGM도 stage 1 기준으로 다시 설정 (원하면)
   ensureAudio();

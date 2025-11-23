@@ -15,6 +15,12 @@
 //---- 생태계 ----//
 let stage;
 let stage4StartMs = null;
+let isFadingToStage5 = false;
+let fadeStartMs = null;
+let stage5StartMs = null;
+const STAGE4_TO_STAGE5_DELAY = 120000;   // 2분 = 120,000ms
+const STAGE4_FADE_DURATION = 3000;       // 페이드아웃 3초
+const STAGE5_DURATION = 5000;            // 엔딩 화면 5초
 let world;
 let foodSpawnRate;  // 먹이 생길 확률
 let populationSize;  // 인구수
@@ -43,6 +49,7 @@ const STAGE4_PALETTE = [
 ];
 
 function setup() {
+  textFont('Pretendard');
   //  const W = 1920, H = 1080;
   const W = 1080, H = 720;
   createCanvas(W, H);
@@ -68,6 +75,30 @@ function setup() {
 
 
 function draw() {
+  // === Stage 5: 엔딩 화면 ===
+  if (stage === 5) {
+    background(color('#1b1b1bff'));
+
+    // 텍스트 스타일
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textFont('Pretendard SemiBold');
+    textSize(36);
+    text('마침내 세계를 이루는 것들', width / 2, height / 2 - 25);
+
+    textFont('Pretendard');
+    textSize(18);
+    text('정세은', width / 2, height / 2 + 27);
+    textSize(12);
+    text('Graduation Project \nDepartment of Design Convergence \nHongik University', width / 2, height / 2 + 70);
+
+    // 5초 지나면 리셋
+    if (stage5StartMs && millis() - stage5StartMs >= STAGE5_DURATION) {
+      resetSketchState();
+    }
+    return; // 👈 stage 5에서는 여기서 끝
+  }
+
   // === 거울 모드(좌우 반전) ===
   push();
   translate(width, 0);
@@ -91,10 +122,11 @@ function draw() {
       bgTo = _pickNextStage4Color(); // 다음 색으로 계속 루프
     }
 
-    // 🔹 2분(120000ms) 지나면 리셋
-    if (millis() - stage4StartMs >= 120000) {
-      resetSketchState();   // ↓ 아래에서 정의할 함수
-      // draw() 나머지 로직은 초기화된 상태로 계속 진행
+    // 🔹 2분 지나면 페이드 시작
+    const elapsed4 = millis() - stage4StartMs;
+    if (!isFadingToStage5 && elapsed4 >= STAGE4_TO_STAGE5_DELAY) {
+      isFadingToStage5 = true;
+      fadeStartMs = millis();
     }
   } else {
     background(backgroundColor);
@@ -146,6 +178,38 @@ function draw() {
     e.run();
   }
 
+  // === stage 4 페이드아웃 오버레이 ===
+  if (stage === 4 && isFadingToStage5 && fadeStartMs !== null) {
+    const now = millis();
+    let fadeT = (now - fadeStartMs) / STAGE4_FADE_DURATION;
+    fadeT = constrain(fadeT, 0, 1);
+
+    // '#1b1b1bff'로 점점 덮기
+    const base = color('#1b1b1bff');
+    const r = red(base);
+    const g = green(base);
+    const b = blue(base);
+    const a = 255 * fadeT; // 0 → 255
+
+    push();
+    noStroke();
+    fill(r, g, b, a);
+    // 거울 모드로 캔버스가 뒤집힌 상태에서 그렸으니,
+    // 전체 화면 덮으려면 이렇게
+    rect(0, 0, width, height);
+    pop();
+
+    // 페이드 다 끝났으면 stage 5로 전환
+    if (fadeT >= 1) {
+      stage = 5;
+      stage5StartMs = millis();
+      isFadingToStage5 = false;
+      fadeStartMs = null;
+      // 배경색도 엔딩용으로 확정
+      backgroundColor = color('#1b1b1bff');
+    }
+  }
+
   pop();
 
 }
@@ -169,7 +233,22 @@ function keyPressed() {
     stage = 4;
     ensureAudio();
     playStageMusic(stage);
+    stage4StartMs = null;
+    isFadingToStage5 = false;
+    fadeStartMs = null;
     // 여기엔 스페이스 체크 넣지 마세요!
+  } else if (key === '5') {
+    stage = 5;
+    stage5StartMs = millis();     // ✅ 5 눌러도 5초 타이머 시작
+    isFadingToStage5 = false;     // 혹시 남아있을지 모를 플래그 정리
+    fadeStartMs = null;
+    backgroundColor = color('#1b1b1bff');
+
+    // 필요하면 음악도 꺼주기
+    if (currentTrack) {
+      fadeOutAndStop(currentTrack, 2.0);
+      currentTrack = null;
+    }
   } else if (key === '0') {
     if (currentTrack) { fadeOutAndStop(currentTrack, 10.0); currentTrack = null; }
   }

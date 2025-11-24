@@ -183,7 +183,7 @@ class Boid {
 
       if (d < sumR) {
         // boid가 한 번 "베어먹을" 때 줄어드는 양
-        radii[i] -= 0.01;
+        radii[i] -= 0.002;
         if (radii[i] <= 0.2) {
           positions.splice(i, 1);
           radii.splice(i, 1);

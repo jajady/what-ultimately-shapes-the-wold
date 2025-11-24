@@ -629,7 +629,7 @@ class Creature {
       if (distance < sumR) {    // 닿았다면
         this.health += 250;   // 체력 회복
         this.maxspeed = min(this.maxspeed + 5, this.initMaxSpeed);     // maxspeed 회복
-        radiusList[i] -= 0.001;      // 해당 먹이 크기 감소
+        radiusList[i] -= 0.008;      // 해당 먹이 크기 감소
         if (radiusList[i] <= 0) {    //먹이 크기가 2보다 작으면
           foodPos.splice(i, 1);    // 해당 위치정보 배열에서 삭제
           radiusList.splice(i, 1);  // 해당 크기정보 배열에서 삭제
@@ -754,7 +754,7 @@ class Creature {
 
     // 지금 노이즈 기반 속도(this.velocity)와
     // 먹이 방향(desired)을 섞어서 살~짝 먹이 쪽으로 틀기
-    const STEER_AMOUNT = 0.08; // 0.05~0.2 사이에서 취향껏 조절
+    const STEER_AMOUNT = 0.2; // 0.05~0.2 사이에서 취향껏 조절
     this.velocity.lerp(desired, STEER_AMOUNT);
   }
 

@@ -107,7 +107,7 @@ class Food {
     }
 
     // 아주 낮은 확률로 먹이가 무작위로 생성됩니다
-    if (random(1) < 0.01) {
+    if (random(1) < 0.05) {
       const pos = createVector(random(margin, width - margin), random(margin, height - margin));
       this.foodPositions.push(pos);
       this.r.push(1);

@@ -178,7 +178,7 @@ class World {
     };
 
     // 1 -> 2 : 3초 연속 접촉 달성 개체 20+
-    if (stage === 1 && touchedCnt >= 23) {
+    if (stage === 1 && touchedCnt >= 25) {
       goStage(2);
       return;
     }

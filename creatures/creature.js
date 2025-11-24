@@ -223,17 +223,26 @@ class Creature {
     // 손 반경
     const handR = (typeof rHand === 'number' ? rHand * 0.5 : 25);
 
+    // zoom 1.0  → touchScale = 1 (그대로)
+    // zoom 2.0  → touchScale = 0.5 (더 가까워야 닿음)
+    // zoom 0.5  → touchScale = 2 (멀리서도 닿은 걸로)
+    const z = (typeof zoom === 'number' && zoom > 0) ? zoom : 1;
+    const touchScale = 1 / z;
+
     // 월드 좌표계 손 포인트 배열 사용
     let insideAny = false;
 
     if (Array.isArray(handPointsWorld) && handPointsWorld.length > 0) {
       for (const hp of handPointsWorld) {
         const d = dist(this.position.x, this.position.y, hp.x, hp.y);
-        if (d < (this.r + handR)) { insideAny = true; break; }
+        if (d < (this.r + handR) * touchScale) {   // ← 여기
+          insideAny = true;
+          break;
+        }
       }
     } else if (typeof handPosition !== 'undefined' && handPosition) {
       const d = dist(this.position.x, this.position.y, handPosition.x, handPosition.y);
-      insideAny = (d < this.r + handR);
+      insideAny = (d < (this.r + handR) * touchScale);       // ← 여기
     } else {
       insideAny = false;
     }

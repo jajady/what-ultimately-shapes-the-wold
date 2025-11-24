@@ -48,44 +48,75 @@ class World {
     this._stage3EnteredMs = null;
   }
 
-  // 매 프레임 실행
   run() {
     // 먹이 업데이트/스폰
     this.food.run();
 
-    // ── stage 4 진입 시 “가장 큰 r TOP3” 리더 지정 (딱 1회)
+    // ── stage 4 진입 시 리더 지정 (딱 1회)
     if (stage === 4 && !this._leadersAssignedAtStage4) {
-      const sorted = [...this.creatures].sort((a, b) => (b.r || 0) - (a.r || 0));
+      // r 기준으로 한 번 정렬해두고 이 배열을 기반으로 필터링
+      const byR = [...this.creatures].sort((a, b) => (b.r || 0) - (a.r || 0));
+
       console.log('=== stage4 leader candidates (by r) ===');
-      sorted.slice(0, 5).forEach((c, idx) => {
-        console.log(idx, 'r=', c.r, 'level=', c.level, 'isHalo=', c.isHalo);
+      byR.slice(0, 5).forEach((c, idx) => {
+        console.log(
+          idx,
+          'r=',
+          c.r,
+          'level=',
+          c.level,
+          'evo=',
+          c.evolutionStep,
+          'isHalo=',
+          c.isHalo
+        );
       });
 
+      const leaders = [];
 
-      const top = [...this.creatures]
-        // 🔥 level 대신 r(반지름) 기준으로 정렬
-        .sort((a, b) => (b.r || 0) - (a.r || 0))
-        .slice(0, 3);
+      // 1️⃣ 후광(isHalo) 있는 개체들 중에서 r 큰 순
+      const haloCandidates = byR.filter(c => c.isHalo);
+      leaders.push(...haloCandidates.slice(0, 3));
+
+      // 2️⃣ 아직 3명 안 되면, evolutionStep >= 2 중에서 r 큰 순
+      if (leaders.length < 3) {
+        const evoCandidates = byR.filter(
+          c => c.evolutionStep >= 2 && !leaders.includes(c)
+        );
+        leaders.push(...evoCandidates.slice(0, 3 - leaders.length));
+      }
+
+      // 3️⃣ 그래도 모자라면, 나머지 전체 중 r 큰 순
+      if (leaders.length < 3) {
+        const fallback = byR.filter(c => !leaders.includes(c));
+        leaders.push(...fallback.slice(0, 3 - leaders.length));
+      }
 
       // 큰/중/작 센터 (radius 큰 순)
       const centersBySize = Array.isArray(flowfield?.centers)
-        ? [...flowfield.centers].sort((a, b) => (b.radius || 0) - (a.radius || 0))
+        ? [...flowfield.centers].sort(
+          (a, b) => (b.radius || 0) - (a.radius || 0)
+        )
         : [];
 
-      top.forEach((c, i) => {
+      leaders.forEach((c, i) => {
         if (!c) return;
         c.isLeader = true;
         c.leaderSince = millis();
+        // ➤ 추가: 리더가 되면 반지름 r을 2배로
+        c.r = c.r * 2;
 
-        const home = centersBySize[i] || centersBySize[centersBySize.length - 1];
+        const home =
+          centersBySize[i] || centersBySize[centersBySize.length - 1];
         if (home) {
-          c.anchorTo(home, i + 1);
+          c.anchorTo(home, i + 1); // rank: 1,2,3
         }
       });
 
       this._leadersAssignedAtStage4 = true;
     }
 
+    // ⬇️ 나머지 run() 코드는 그대로
     // 생명체 업데이트 (역순 순회: 죽은 개체 제거 안전)
     for (let i = this.creatures.length - 1; i >= 0; i--) {
       const c = this.creatures[i];
@@ -116,10 +147,6 @@ class World {
 
   // ─────────────────────────────
   // 자동 스테이지 전환
-  // 1→2 : 3초 연속 접촉 달성(everTouched3s) 개체 ≥ 20
-  // 2→3 : isColored 개체 ≥ 15
-  // 3→4 : isHalo   개체 ≥ 10
-  // + 보조 : stage3가 된 뒤 15초 지났는데도 아직 stage4가 아니면 강제 4로
   // ─────────────────────────────
   _autoAdvanceStage() {
     const total = this.creatures.length;
@@ -151,13 +178,13 @@ class World {
     };
 
     // 1 -> 2 : 3초 연속 접촉 달성 개체 20+
-    if (stage === 1 && touchedCnt >= 15) {
+    if (stage === 1 && touchedCnt >= 23) {
       goStage(2);
       return;
     }
 
     // 2 -> 3 : isColored 개체 15+
-    if (stage === 2 && coloredCnt >= 40) {
+    if (stage === 2 && coloredCnt >= 80) {
       goStage(3);
       return;
     }
@@ -168,7 +195,7 @@ class World {
     }
 
     // 3 -> 4 : isHalo 개체 10+
-    if (stage === 3 && haloCnt >= 20) {
+    if (stage === 3 && haloCnt >= 40) {
       goStage(4);
       return;
     }

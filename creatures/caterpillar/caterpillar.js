@@ -264,15 +264,6 @@ class Caterpillar extends Creature {
       this.eyes.setTouching(this.touching);
     }
 
-    push();
-    fill('red');
-    noStroke();
-    textSize(10);
-    textAlign(CENTER);
-    if (this.anchorRank > 0) {
-      text(`L${this.anchorRank}`, this.position.x, this.position.y - this.r - 10);
-    }
-    pop();
   }
 
   init() {    // 몸통 원 위치 저장 배열 생성

@@ -63,7 +63,7 @@ class Creature {
     this.touching = false;               // 지금 손에 닿아 있는지
     this.touchHoldMs = 0;                // 연속 접촉 누적 시간(ms)
     this.everTouched3s = false;          // 한 번이라도 3초 연속 접촉(쓰다듬기) 달성?
-    this.touchThresholdMs = 3000;        // 임계치: 3초
+    this.touchThresholdMs = 2000;        // 임계치: 3초
     this.touchTriggered = false;         // (이제 사용 안 해도 되지만 남겨둬도 무방)
     this._lastUpdateMs = millis();       // 프레임 간 경과시간 계산용
 

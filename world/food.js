@@ -27,7 +27,7 @@ class Food {
   // 특정 위치에 먹이를 추가합니다
   add(position) {
     this.foodPositions.push(position.copy());
-    this.r.push(1);
+    this.r.push(0.5);
 
     // ★ 새 먹이도 랜덤 색상 부여
     const colorList = [
@@ -97,20 +97,14 @@ class Food {
       fill(antherColor);
       ellipse(rad * -0.7, rad * 0.5, rad * 0.5, rad);
 
-      // for (let p = 0; p < petalCount; p++) {
-      //   ellipse(0, -rad * 1.5, rad, rad * 3);
-      //   rotate(step);
-      // }
-
-
       pop();
     }
 
     // 아주 낮은 확률로 먹이가 무작위로 생성됩니다
-    if (random(1) < 0.05) {
-      const pos = createVector(random(margin, width - margin), random(margin, height - margin));
+    if (random(1) < 0.3) {
+      const pos = createVector(random(width), random(height));
       this.foodPositions.push(pos);
-      this.r.push(1);
+      this.r.push(0.5);
       this.colors.push(random([
         color('#d1b7ccff'),
         color('#d9cbc0ff'),
@@ -120,8 +114,8 @@ class Food {
 
     // 성장 처리
     for (let i = 0; i < this.r.length; i++) {
-      if (random(1) < 0.01 && this.r[i] < this.maxR) {
-        this.r[i] += 0.05;
+      if (random(1) < 0.02 && this.r[i] < this.maxR) {
+        this.r[i] += 0.08;
       }
     }
   }

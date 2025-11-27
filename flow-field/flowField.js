@@ -12,7 +12,7 @@ class FlowField {
 
     // 선 알파 값(0→255) & 증가 속도
     this.lineAlpha = 0;
-    this.alphaSpeed = 0.1;      // 프레임당 5씩 증가 (원하면 조절)
+    this.alphaSpeed = 0.2;      // 프레임당 5씩 증가 (원하면 조절)
     this._alphaDone = false;  // 255에 도달하면 true
 
     // 색 인덱스는 '한 번만' 랜덤으로 정해 둔다
@@ -86,7 +86,7 @@ class FlowField {
         const c = PALETTE[this.colorIdx[i][j]]; // 고정된 색 사용
 
         stroke(c.r, c.g, c.b, this.lineAlpha);
-        strokeWeight(0.5);
+        strokeWeight(0.7);
 
         push();
         translate(x, y);

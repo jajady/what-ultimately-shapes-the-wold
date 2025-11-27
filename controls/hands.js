@@ -33,7 +33,7 @@ function preload() {       // ml5 handpose 준비
   //   evolveSfx.setVolume(0.3);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
   // });
   evolveSfx = loadSound('../assets/silver-chime.mp3', () => {
-    evolveSfx.setVolume(0.5);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
+    evolveSfx.setVolume(3.0);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
   });
 }
 

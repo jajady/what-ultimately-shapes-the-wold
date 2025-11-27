@@ -125,26 +125,121 @@ class Caterpillar extends Creature {
       ellipse(this.position.x, this.position.y, r * 1.8, r * 1.8);
     }
 
-    // === 힐 연결선: 머리에서 시작 ===
+    // === 힐 연결선: 따뜻한 빛이 살살 퍼져가고, 도착점에서 1초 머무르는 효과 ===
     if (this._healTarget && stage === 3) {
-      const a = this.position;        // ← 머리 월드 좌표
-      const b = this._healTarget.position;
+      const a = this.position;               // 힐 보내는 쪽 (나)
+      const b = this._healTarget.position;   // 힐 받는 대상
 
-      const pulse = 0.5 + 0.5 * sin(frameCount * 0.02);
-      const alpha = 50 * pulse;
+      // 🔸 한 사이클 = 이동 3초 + 도착지점에서 1초 머무름
+      const travelDur = 3000; // ms, 빛이 a→b 로 이동하는 데 걸리는 시간
+      const holdDur = 1000; // ms, b 에서 머무는 시간
+      const cycleDur = travelDur + holdDur;
 
-      stroke(red(this.c2), green(this.c2), blue(this.c2), alpha);
-      strokeWeight(max(1, this.r * 0.12));
+      const elapsed = (millis() - this._healStartMs) % cycleDur;
+      const isHolding = (elapsed > travelDur);  // 도착지점에서 머무는 구간인지?
+
+      let travelT;
+      if (isHolding) {
+        travelT = 1;                    // 도착 지점에서 고정
+      } else {
+        travelT = elapsed / travelDur;  // 0 → 1 로 천천히 이동
+      }
+
+      // 현재 빛 덩어리 위치
+      const px = lerp(a.x, b.x, travelT);
+      const py = lerp(a.y, b.y, travelT);
+
+      push();
+
+      // 1) 전체 라인에 옅은 빛 기운만 깔아두기
+      const baseBeamAlpha = 18;
+      const beamCol = color(255, 230, 200, baseBeamAlpha);
+      stroke(beamCol);
+      strokeWeight(max(1, this.r * 0.06));
       line(a.x, a.y, b.x, b.y);
 
-      // 선을 따라 이동하는 점
-      const dotT = (millis() - this._healStartMs) / 3200;
-      const frac = dotT - floor(dotT);
-      const px = lerp(a.x, b.x, frac);
-      const py = lerp(a.y, b.y, frac);
+      // ADD 블렌딩으로 빛 번짐 느낌
+      blendMode(ADD);
       noStroke();
-      fill(this.c3);
-      heart(px, py, this.r * 0.35);
+
+      const baseSize = this.r * 1.2;
+
+      if (!isHolding) {
+        // ───── 이동 중일 때: 살살 퍼져나가는 트레일 ─────
+        const trailCount = 2;        // 잔상 개수
+        const trailStep = 0.08;      // 한 잔상마다 시간 간격
+
+        for (let i = 0; i < trailCount; i++) {
+          const backT = travelT - i * trailStep;
+          if (backT < 0) continue;
+
+          const bx = lerp(a.x, b.x, backT);
+          const by = lerp(a.y, b.y, backT);
+
+          const falloff = 1.0 - i / trailCount;                 // 뒤로 갈수록 약해짐
+          const sizeMul = 1.4 + i * 0.035;                       // 뒤로 갈수록 더 크고 흐려짐
+          const alphaMul = 0.6 * falloff;                       // 뒤로 갈수록 더 투명
+          const pulse = 0.8 + 0.2 * sin(frameCount * 0.1);      // 숨쉬듯 살짝 변동
+
+          // 바깥 후광
+          fill(255, 240, 210, 40 * alphaMul);
+          ellipse(bx, by, baseSize * sizeMul * 1.8 * pulse, baseSize * sizeMul * 1.8 * pulse);
+        }
+
+        // 가장 앞쪽 현재 빛 덩어리 – 조금 더 또렷하게
+        const pulse = 0.9 + 0.1 * sin(frameCount * 0.15);
+        fill(255, 225, 190, 120);
+        ellipse(px, py, baseSize * 0.9 * pulse, baseSize * 0.9 * pulse);
+
+        fill(255, 245, 220, 210);
+        ellipse(px, py, baseSize * 0.55 * pulse, baseSize * 0.55 * pulse);
+
+      } else {
+        // ───── 도착 지점에서 1초 머무는 구간 ─────
+        // travelT = 1 이라 항상 b 에 머무는 상태
+        const holdNorm = (elapsed - travelDur) / holdDur;   // 0 ~ 1
+        const pulse = 0.85 + 0.25 * sin(frameCount * 0.12);
+
+        // 도착 지점에서 더 크게, 더 부드럽게 퍼지는 빛
+        fill(255, 240, 210, 70);
+        ellipse(b.x, b.y,
+          baseSize * 2.2 * pulse,
+          baseSize * 2.2 * pulse
+        );
+
+        fill(255, 225, 190, 140);
+        ellipse(b.x, b.y,
+          baseSize * 1.4 * pulse,
+          baseSize * 1.4 * pulse
+        );
+
+        fill(255, 250, 230, 230);
+        ellipse(b.x, b.y,
+          baseSize * 0.7 * pulse,
+          baseSize * 0.7 * pulse
+        );
+
+        // 도착지점 주변에 아주 살짝 흩어지는 입자들
+        for (let i = 0; i < 4; i++) {
+          const offset = p5.Vector.random2D().mult(this.r * 0.45 * random(0.3, 1.0));
+          const dotSize = this.r * random(0.07, 0.14);
+          fill(255, 250, 230, 150);
+          ellipse(b.x + offset.x, b.y + offset.y, dotSize, dotSize);
+        }
+      }
+
+      // 이동/정지 상관없이, 현재 코어 주변에 약간의 작은 알갱이
+      const coreX = isHolding ? b.x : px;
+      const coreY = isHolding ? b.y : py;
+      for (let i = 0; i < (isHolding ? 3 : 2); i++) {
+        const offset = p5.Vector.random2D().mult(this.r * 0.35 * random(0.2, 0.9));
+        const dotSize = this.r * random(0.05, 0.1);
+        fill(255, 250, 235, isHolding ? 170 : 130);
+        ellipse(coreX + offset.x, coreY + offset.y, dotSize, dotSize);
+      }
+
+      blendMode(BLEND);
+      pop();
     }
 
     // ───────── 1) 몸통(꼬리→머리 바로 앞까지) ─────────

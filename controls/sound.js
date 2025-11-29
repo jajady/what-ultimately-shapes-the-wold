@@ -21,7 +21,7 @@ function fadeIn(snd, target = 0.8, sec = 0.8) {
 }
 
 // 예: 1스테이지는 조용, 3스테이지는 좀 더 큼
-const stageVolumes = { 1: 0.5, 2: 0.5, 3: 0.35, 4: 0.3 };
+const stageVolumes = { 1: 0.7, 2: 0.4, 3: 0.35, 4: 0.3 };
 
 function playStageMusic(stageNum) {
   const next = tracks[stageNum];

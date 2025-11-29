@@ -221,7 +221,7 @@ class Creature {
     }
 
     // 손 반경
-    const handR = (typeof rHand === 'number' ? rHand * 0.5 : 25);
+    const handR = (typeof rHand === 'number' ? rHand * 0.5 : 45);
 
     // zoom 1.0  → touchScale = 1 (그대로)
     // zoom 2.0  → touchScale = 0.5 (더 가까워야 닿음)

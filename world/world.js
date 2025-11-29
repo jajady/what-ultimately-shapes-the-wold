@@ -178,13 +178,13 @@ class World {
     };
 
     // 1 -> 2 : 3초 연속 접촉 달성 개체 20+
-    if (stage === 1 && touchedCnt >= 20) {
+    if (stage === 1 && touchedCnt >= 5) {
       goStage(2);
       return;
     }
 
     // 2 -> 3 : isColored 개체 15+
-    if (stage === 2 && coloredCnt >= 70) {
+    if (stage === 2 && coloredCnt >= 5) {
       goStage(3);
       return;
     }
@@ -195,7 +195,7 @@ class World {
     }
 
     // 3 -> 4 : isHalo 개체 10+
-    if (stage === 3 && haloCnt >= 36) {
+    if (stage === 3 && haloCnt >= 8) {
       goStage(4);
       return;
     }
@@ -203,7 +203,7 @@ class World {
     // ★ 보조 규칙: stage3가 된 뒤 15초가 지났는데 아직 4가 아니면 강제 4로
     if (stage === 3 && this._stage3EnteredMs != null) {
       const elapsed = millis() - this._stage3EnteredMs;
-      if (elapsed >= 60000 * 1.8) {    // 1.8분
+      if (elapsed >= 60000 * 1.0) {    // 1.8분
         goStage(4);
         return;
       }

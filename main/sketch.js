@@ -77,7 +77,8 @@ function setup() {
 function draw() {
   // === Stage 5: 엔딩 화면 ===
   if (stage === 5) {
-    background(color('#1b1b1bff'));
+    // background(color('#1b1b1bff'));
+    background(color('#000000'));
 
     // 텍스트 스타일
     fill(255);

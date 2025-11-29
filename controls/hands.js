@@ -25,14 +25,14 @@ function preload() {       // ml5 handpose 준비
   });
 
   // ★ 경로/파일명은 네 자원에 맞게 수정!
-  tracks[1] = loadSound('../assets/uplifting-pad-texture-113842.mp3');
-  tracks[2] = loadSound('../assets/angelic-pad-loopwav-14643.mp3');
-  tracks[3] = loadSound('../assets/016133_harmony-of-peace-56085.mp3');
-  tracks[4] = loadSound('../assets/Denied Access - Density & Time.mp3');
+  tracks[1] = loadSound('assets/uplifting-pad-texture-113842.mp3');
+  tracks[2] = loadSound('assets/angelic-pad-loopwav-14643.mp3');
+  tracks[3] = loadSound('assets/016133_harmony-of-peace-56085.mp3');
+  tracks[4] = loadSound('assets/Denied Access - Density & Time.mp3');
   // evolveSfx = loadSound('../assets/221683__timbre__another-magic-wand-spell-tinkle.flac', () => {
   //   evolveSfx.setVolume(0.3);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
   // });
-  evolveSfx = loadSound('../assets/silver-chime.mp3', () => {
+  evolveSfx = loadSound('assets/silver-chime.mp3', () => {
     evolveSfx.setVolume(3.0);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
   });
 }

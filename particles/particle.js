@@ -40,7 +40,7 @@ class Particle {
     noStroke();
     fill(255, this.lifespan);
     if (zoomActive === false) {
-      const c = color('#fffa65ff');       // #RRGGBB
+      const c = color('magenta');       // #RRGGBB
       c.setAlpha(constrain(this.lifespan, 0, 255));
       fill(c);
       circle(this.position.x, this.position.y, 5);
@@ -48,7 +48,7 @@ class Particle {
       const c = color('#3c63d0');       // #RRGGBB
       c.setAlpha(constrain(this.lifespan, 0, 255));
       fill(c);
-      circle(this.position.x, this.position.y, 5);
+      circle(this.position.x, this.position.y, 10);
     }
 
   }

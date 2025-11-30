@@ -9,7 +9,7 @@ let zoom = 1.0;            // 현재 줌 1.0
 let targetZoom = 1.0;      // 목표 줌(스무딩용) 초기값 1.0
 let minZoom = 1.0;         // 화면보다 작게 보이지 않도록 최소 1.0
 let maxZoom = 20.0;         // 필요에 따라 조절
-const ZOOM_SMOOTH = 0.1;  // lerp 계수(부드러움)
+const ZOOM_SMOOTH = 0.5;  // lerp 계수(부드러움)
 
 let zoomActive = false;    // 두 손 모두 핀치 중?
 let zoomStartDist = 0;     // 줌 시작 시 두 검지 사이 거리

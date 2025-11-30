@@ -221,7 +221,7 @@ class Creature {
     }
 
     // [1] 손 반경을 좀 더 크게 + rHand 줄이지 않기
-    const handR = (typeof rHand === 'number' ? rHand : 45);
+    const handR = (typeof rHand === 'number' ? rHand : 60);
 
     // [2] 줌에 따라 너무 심하게 줄어들지 않게 완화
     const z = (typeof zoom === 'number' && zoom > 0) ? zoom : 1;

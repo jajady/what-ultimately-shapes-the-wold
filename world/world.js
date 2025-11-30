@@ -184,7 +184,7 @@ class World {
     }
 
     // 2 -> 3 : isColored 개체 15+
-    if (stage === 2 && coloredCnt >= 5) {
+    if (stage === 2 && coloredCnt >= 7) {
       goStage(3);
       return;
     }

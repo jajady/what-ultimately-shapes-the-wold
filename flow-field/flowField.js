@@ -86,7 +86,7 @@ class FlowField {
         const c = PALETTE[this.colorIdx[i][j]]; // 고정된 색 사용
 
         stroke(c.r, c.g, c.b, this.lineAlpha);
-        strokeWeight(0.7);
+        strokeWeight(1);
 
         push();
         translate(x, y);

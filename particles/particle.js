@@ -43,7 +43,7 @@ class Particle {
       const c = color('magenta');       // #RRGGBB
       c.setAlpha(constrain(this.lifespan, 0, 255));
       fill(c);
-      circle(this.position.x, this.position.y, 5);
+      circle(this.position.x, this.position.y, 10);
     } else {
       const c = color('yellow');       // #RRGGBB
       c.setAlpha(constrain(this.lifespan, 0, 255));

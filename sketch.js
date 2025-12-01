@@ -50,8 +50,8 @@ const STAGE4_PALETTE = [
 
 function setup() {
   textFont('Pretendard');
-   const W = 1920, H = 1080;
-  // const W = 1080, H = 720;
+  //  const W = 1920, H = 1080;
+  const W = 1280, H = 720;
   createCanvas(W, H);
   video = createCapture({
     video: {

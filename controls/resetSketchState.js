@@ -44,7 +44,7 @@ function resetSketchState() {
 
   // ── 흐름장 초기화(센터 3개: 큰/중/작)
   flowfield = new FlowField(
-    10,
+    30,
     [
       { x: width * 0.30, y: height * 0.35, strength: 2.0, radius: 200, rot: -HALF_PI }, // 큰
       { x: width * 0.80, y: height * 0.50, strength: 1.0, radius: 100, rot: HALF_PI }, // 중

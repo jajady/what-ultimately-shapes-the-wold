@@ -24,14 +24,18 @@ function preload() {       // ml5 handpose 준비
     // flipped 옵션은 구버전 전용이었으니, 캔버스를 미러링해서 처리
   });
 
-  // ★ 경로/파일명은 네 자원에 맞게 수정!
+  // 음원
+  // https://pixabay.com/sound-effects/uplifting-pad-texture-113842/
   tracks[1] = loadSound('assets/uplifting-pad-texture-113842.mp3');
+  // Angelic Pad Loop.wav by PhonZz -- https://freesound.org/s/242773/ -- License: Creative Commons 0
   tracks[2] = loadSound('assets/angelic-pad-loopwav-14643.mp3');
+  // https://pixabay.com/sound-effects/016133-harmony-of-peace-56085/
   tracks[3] = loadSound('assets/016133_harmony-of-peace-56085.mp3');
-  tracks[4] = loadSound('assets/denied-access-density-time.mp3');
-  // evolveSfx = loadSound('../assets/221683__timbre__another-magic-wand-spell-tinkle.flac', () => {
-  //   evolveSfx.setVolume(0.3);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
-  // });
+
+  // tracks[4] = loadSound('assets/denied-access-density-time.mp3');
+  tracks[4] = loadSound('assets/beautiful-time-lapse-116203.mp3');
+
+  // https://pixabay.com/sound-effects/silver-chime-290187/
   evolveSfx = loadSound('assets/silver-chime.mp3', () => {
     evolveSfx.setVolume(3.0);   // ★ 0.0 ~ 1.0 사이, 원하는 값으로
   });

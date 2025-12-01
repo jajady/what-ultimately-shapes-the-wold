@@ -33,6 +33,7 @@ function preload() {       // ml5 handpose 준비
   tracks[3] = loadSound('assets/016133_harmony-of-peace-56085.mp3');
 
   // tracks[4] = loadSound('assets/denied-access-density-time.mp3');
+  // Music by <a href="https://pixabay.com/users/lexin_music-28841948/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=116203">Aleksey Chistilin</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=116203">Pixabay</a>
   tracks[4] = loadSound('assets/beautiful-time-lapse-116203.mp3');
 
   // https://pixabay.com/sound-effects/silver-chime-290187/

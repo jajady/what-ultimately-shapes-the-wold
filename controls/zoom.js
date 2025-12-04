@@ -3,7 +3,7 @@
 let handPoints = [];        // 화면 좌표(여러 손)
 let handPointsWorld = [];   // 월드 좌표(줌/중심 반영 후)
 
-const PINCH_THRESH = 30;   // 각 손의 엄지-검지 거리 임계값(px)
+const PINCH_THRESH = 40;   // 각 손의 엄지-검지 거리 임계값(px)
 const ZOOM_DEAD_RATIO = 0; // 4% 이내 변화는 무시 (원하면 0.03~0.06 사이로 조절)
 let zoom = 1.0;            // 현재 줌 1.0
 let targetZoom = 1.0;      // 목표 줌(스무딩용) 초기값 1.0

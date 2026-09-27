@@ -39,5 +39,7 @@ Your presence initiates transformation within the ecosystem.
 마침내, 세계를 이루는 것은 유전자만이 아니라  
 우리의 의지, 우리의 선택, 그리고 서로를 향한 연결성이다.  
 
+Exhibition Video: https://youtu.be/tPY6_V_dtE8?si=W4MoqMSf0G6j_GfA
+
 In the end, what truly shapes the world is not just genes,  
 but our will, our choices, and our connection to one another.
